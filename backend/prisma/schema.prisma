@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id                       String    @id @default(auto()) @map("_id") @db.ObjectId
+  email                    String    @unique
+  password                 String
+  firstName                String
+  lastName                 String
+  phone                    String?
+  role                     String    // Can be 'ADMIN', 'DENTIST', or 'PATIENT'
+  
+  // Email verification
+  isEmailVerified          Boolean   @default(false)
+  emailVerificationToken   String?
+  emailVerificationExpiry  DateTime?
+  
+  // Password reset
+  resetPasswordToken       String?   // Token for password reset
+  resetPasswordExpires     DateTime? // Expiration time for reset token
+  
+  // Marketing preferences
+  agreeToMarketing         Boolean   @default(false)
+  
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+  
+  // Relations
+  blogs                    Blog[]           @relation("UserBlogs")
+  DentistProfile           DentistProfile?  @relation("UserDentistProfile")
+}
+
+model DentistProfile {
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Basic Info
+  licenseNumber     String?    // Dental license number
+  clinicName        String?
+  phoneNumber       String?
+  
+  // Address
+  address           String?
+  city              String?
+  state             String?
+  zipCode           String?
+  location          String?    // Simple location string from signup
+  latitude          Float?     // For map display
+  longitude         Float?     // For map display
+  
+  // Business Hours (stored as JSON for flexibility)
+  openingHours      Json       // {"monday": "9:00-17:00", "tuesday": "9:00-17:00", etc.}
+  
+  // Optional details
+  description       String?    // Brief description (max 200 chars)
+  specialties       String[]   // e.g., ["General Dentistry", "Orthodontics"]
+  website           String?
+  
+  // Status
+  isActive          Boolean    @default(true)
+  isVerified        Boolean    @default(false) // Admin verification
+  
+  // Relations
+  userId            String     @unique @db.ObjectId
+  user              User       @relation("UserDentistProfile", fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  
+  @@index([city])
+  @@index([isActive])
+  @@index([isVerified])
+  @@index([latitude, longitude])
+}
+
+model Blog {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  content       String
+  excerpt       String?     // Brief summary of the blog
+  slug          String      @unique // URL-friendly version of title
+  status        BlogStatus  @default(DRAFT)
+  category      String?     // Category like "Dental Care", "Health Tips", etc.
+  tags          String[]    // Array of tags for better organization
+  featuredImage String?     // URL to featured image
+  metaTitle     String?     // SEO meta title
+  metaDescription String?   // SEO meta description
+  
+  // Author information
+  authorId      String      @db.ObjectId
+  author        User        @relation("UserBlogs", fields: [authorId], references: [id], onDelete: Cascade)
+  
+  // Analytics
+  viewCount     Int         @default(0)
+  likeCount     Int         @default(0)
+  
+  // Publishing
+  publishedAt   DateTime?   // When the blog was published
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  @@index([status])
+  @@index([publishedAt])
+  @@index([category])
+  @@index([authorId])
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}

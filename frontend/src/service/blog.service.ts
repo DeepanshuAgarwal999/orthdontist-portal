@@ -13,7 +13,7 @@ export class BlogsService {
     if (params?.sortBy) searchParams.append("sortBy", params.sortBy);
     if (params?.sortOrder) searchParams.append("sortOrder", params.sortOrder);
 
-    const url = `/blogs${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+    const url = `/blogs/public${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
     const response = await axiosInstance.get(url);
     return response.data;
   }

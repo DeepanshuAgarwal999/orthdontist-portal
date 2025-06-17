@@ -356,7 +356,6 @@ export class BlogService {
             firstName: true,
             lastName: true,
             email: true,
-            role: true,
           },
         },
       },

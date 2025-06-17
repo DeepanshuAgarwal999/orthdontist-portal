@@ -38,7 +38,6 @@ export class BlogController {
     @Res() res: Response,
   ) {
     const blog = await this.blogService.createBlog(createBlogDto, req.user.id);
-
     return res.status(HttpStatus.CREATED).json({
       success: true,
       message: 'Blog created successfully',
@@ -50,6 +49,7 @@ export class BlogController {
    * Get all blogs with admin privileges (filtering, pagination, all statuses)
    * GET /api/v1/blogs/admin
    */
+  @Get()
   @Roles(UserRole.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
   async getAllBlogsAdmin(@Query() query: BlogQueryDto, @Res() res: Response) {
@@ -175,7 +175,7 @@ export class BlogController {
    * Get all published blogs (Public access)
    * GET /api/v1/blogs
    */
-  @Get()
+  @Get('public')
   async getPublishedBlogs(@Query() query: BlogQueryDto, @Res() res: Response) {
     const result = await this.blogService.getPublishedBlogs(query);
 

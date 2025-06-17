@@ -24,7 +24,10 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 401) {
-      if (typeof window !== "undefined") {
+      // Don't redirect if it's a login request (to allow form error handling)
+      const isLoginRequest = error.config?.url?.includes("/auth/login");
+
+      if (typeof window !== "undefined" && !isLoginRequest) {
         window.location.href = "/login";
       }
     }

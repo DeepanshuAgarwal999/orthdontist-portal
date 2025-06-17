@@ -26,6 +26,7 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Handle unauthorized access
+      // Only redirect on client side, not in server-side middleware
       if (typeof window !== "undefined") {
         window.location.href = "/login";
       }

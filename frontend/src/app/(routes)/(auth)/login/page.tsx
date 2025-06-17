@@ -37,14 +37,14 @@ const LoginPage: React.FC = () => {
     };
 
     const loginMutation = useMutation({
-        mutationFn: async (formData: LoginFormData) => {
-            return await UserService.login(formData);
+        mutationFn: (formData: LoginFormData) => {
+            return UserService.login(formData);
         },
         onSuccess: (data) => {
             // Store user info if needed
             const user = data.user;
             if (user.role === 'admin') {
-                router.push('/admin/dashboard');
+                return
             } else if (user.role === 'dentist') {
                 router.push('/dentists');
             } else {

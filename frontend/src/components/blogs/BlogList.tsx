@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BlogsResponse, BlogQueryParams } from '@/types/blog';
 import { BlogsService } from '@/service/blog.service';
 import BlogCard from './BlogCard';
@@ -26,7 +26,7 @@ const BlogList: React.FC<BlogListProps> = ({
         page: 1,
         limit: itemsPerPage,
         status: 'PUBLISHED',
-        sortBy: 'publishedAt',
+        sortBy: 'createdAt',
         sortOrder: 'desc'
     });
     const { data: blogsData, isLoading, error } = useQuery({
@@ -38,18 +38,17 @@ const BlogList: React.FC<BlogListProps> = ({
     const handlePageChange = (page: number) => {
         setFilters(prev => ({ ...prev, page }));
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    const handleSearchFilters = (newFilters: BlogQueryParams) => {
+    }; const handleSearchFilters = (newFilters: BlogQueryParams) => {
         const updatedFilters = { ...filters, ...newFilters, limit: itemsPerPage };
         setFilters(updatedFilters);
+
     };
 
     const retryFetch = () => {
         queryClient.invalidateQueries({ queryKey: ['blogs'] })
     }
 
-    if (isLoading && !blogsData) {
+    if (isLoading) {
         return (
             <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`}>
                 <div className="text-center mb-12">

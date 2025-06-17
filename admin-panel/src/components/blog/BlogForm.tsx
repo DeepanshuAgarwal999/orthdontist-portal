@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { Save, Eye, X, Plus, Tag, Upload, Trash2 } from 'lucide-react';
 import { BlogService } from '@/services/blog.service';
 import { Blog, CreateBlogRequest, UpdateBlogRequest } from '@/types/blog';
@@ -34,6 +34,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ blog, mode }) => {
         title: blog?.title || '',
         content: blog?.content || '',
         excerpt: blog?.excerpt || '',
+        category: blog?.category || '',
         featuredImage: blog?.featuredImage || '',
         status: blog?.status || 'DRAFT' as const,
         tags: blog?.tags || [],
@@ -52,9 +53,16 @@ const BlogForm: React.FC<BlogFormProps> = ({ blog, mode }) => {
     const [newTag, setNewTag] = useState('');
     const [preview, setPreview] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null); const [featuredImagePreview, setFeaturedImagePreview] = useState<string | null>(null);
-    const [isUploadingImage, setIsUploadingImage] = useState(false);
+    const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null); const [featuredImagePreview, setFeaturedImagePreview] = useState<string | null>(null); const [isUploadingImage, setIsUploadingImage] = useState(false);
     const [isDragOver, setIsDragOver] = useState(false);
+
+    // Fetch available categories
+    const { data: categoriesData } = useQuery({
+        queryKey: ['blog-categories'],
+        queryFn: () => BlogService.getBlogCategories(),
+    });
+
+    const categories = categoriesData?.data || [];
 
     // Initialize featured image preview for edit mode
     useEffect(() => {
@@ -119,12 +127,11 @@ const BlogForm: React.FC<BlogFormProps> = ({ blog, mode }) => {
                 setError('Please upload the featured image before saving the blog');
                 return;
             }
-        }
-
-        const blogData = {
+        } const blogData = {
             title: formData.title.trim(),
             content: contentHtml,
             excerpt: formData.excerpt.trim() || undefined,
+            category: formData.category.trim() || undefined,
             featuredImage: formData.featuredImage.trim() || undefined,
             status: formData.status === 'ARCHIVED' ? 'DRAFT' as const : formData.status,
             tags: formData.tags.length > 0 ? formData.tags : undefined,
@@ -292,8 +299,15 @@ const BlogForm: React.FC<BlogFormProps> = ({ blog, mode }) => {
                                 alt={formData.title}
                                 className="w-full h-64 object-cover rounded-lg mb-6"
                             />
+                        )}                        <h1 className="text-3xl font-bold text-gray-900 mb-4">{formData.title}</h1>
+                        {formData.category && (
+                            <div className="mb-4">
+                                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                    {formData.category}
+                                </span>
+                            </div>
                         )}
-                        <h1 className="text-3xl font-bold text-gray-900 mb-4">{formData.title}</h1>                        {formData.excerpt && (
+                        {formData.excerpt && (
                             <p className="text-xl text-gray-600 mb-6">{formData.excerpt}</p>
                         )}
                         <div className="prose max-w-none">
@@ -353,9 +367,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ blog, mode }) => {
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             placeholder="Enter blog title"
                         />
-                    </div>
-
-                    <div>
+                    </div>                    <div>
                         <label htmlFor="excerpt" className="block text-sm font-medium text-gray-700 mb-2">
                             Excerpt
                         </label>
@@ -369,6 +381,28 @@ const BlogForm: React.FC<BlogFormProps> = ({ blog, mode }) => {
                             placeholder="Brief description of the blog (optional)"
                         />
                     </div>                    <div>
+                        <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+                            Category
+                        </label>
+                        <input
+                            type="text"
+                            id="category"
+                            name="category"
+                            value={formData.category}
+                            onChange={handleInputChange}
+                            list="category-suggestions"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Enter or select a category (optional)"
+                        />
+                        <datalist id="category-suggestions">
+                            {categories.map((category) => (
+                                <option key={category} value={category} />
+                            ))}
+                        </datalist>
+                        <p className="mt-1 text-sm text-gray-500">
+                            Choose from existing categories or enter a new one.
+                        </p>
+                    </div><div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Featured Image
                         </label>

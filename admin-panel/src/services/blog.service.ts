@@ -43,17 +43,27 @@ export class BlogService {
     const response = await axiosInstance.patch(`/blogs/${id}/unpublish`);
     return response.data;
   }
-
   static async getBlogStatistics(): Promise<{
     success: boolean;
     data: {
-      total: number;
-      published: number;
-      draft: number;
-      archived: number;
+      totalBlogs: number;
+      publishedBlogs: number;
+      draftBlogs: number;
+      archivedBlogs: number;
+      totalViews: number;
+      totalLikes: number;
     };
   }> {
     const response = await axiosInstance.get("/blogs/admin/statistics");
+    return response.data;
+  }
+
+  static async getBlogCategories(): Promise<{
+    success: boolean;
+    data: string[];
+    message: string;
+  }> {
+    const response = await axiosInstance.get("/blogs/categories");
     return response.data;
   }
 }

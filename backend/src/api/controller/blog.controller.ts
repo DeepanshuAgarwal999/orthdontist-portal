@@ -215,6 +215,21 @@ export class BlogController {
   }
 
   /**
+   * Get unique blog categories (Public access)
+   * GET /api/v1/blogs/categories
+   */
+  @Get('categories')
+  async getBlogCategories(@Res() res: Response) {
+    const categories = await this.blogService.getBlogCategories();
+
+    return res.status(HttpStatus.OK).json({
+      success: true,
+      message: 'Blog categories retrieved successfully',
+      data: categories,
+    });
+  }
+
+  /**
    * Get blog by slug (Public access for published, Admin for all)
    * GET /api/v1/blogs/slug/:slug
    */
@@ -227,8 +242,7 @@ export class BlogController {
     // Check if user is authenticated and get their role
     let userRole: UserRole | undefined;
     try {
-      const authHeader = req.headers.authorization;
-      const token = req.cookies?.access_token || authHeader?.split(' ')[1];
+      const token = req.cookies?.access_token;
 
       if (token && req.user) {
         userRole = req.user.role;

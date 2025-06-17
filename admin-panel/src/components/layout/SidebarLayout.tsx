@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
     LayoutDashboard,
     FileText,
@@ -31,11 +31,7 @@ const navigationItems = [
         href: '/dashboard/blogs',
         icon: FileText,
     },
-    {
-        name: 'Users',
-        href: '/dashboard/users',
-        icon: Users,
-    },
+
     {
         name: 'Dentists',
         href: '/dashboard/dentists',
@@ -51,10 +47,15 @@ const navigationItems = [
 const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const pathname = usePathname();
+    const router = useRouter()
 
     const handleLogout = async () => {
-        await AuthService.logout()
-        window.location.href = '/login';
+        try {
+            await AuthService.logout()
+            router.push('/')
+        } catch (error) {
+
+        }
     };
 
     return (

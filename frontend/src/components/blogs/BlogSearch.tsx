@@ -1,5 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { BlogQueryParams } from '@/types/blog';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { BlogsService } from '@/service/blog.service';
 
 interface BlogSearchProps {
     onSearch: (params: BlogQueryParams) => void;
@@ -12,20 +14,14 @@ const BlogSearch: React.FC<BlogSearchProps> = ({ onSearch, loading = false, clas
     const [category, setCategory] = useState('');
     const [sortBy, setSortBy] = useState('publishedAt');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-
-    const categories = [
-        'Dental Health',
-        'Orthodontics',
-        'Cosmetic Dentistry',
-        'Oral Surgery',
-        'Preventive Care',
-        'Pediatric Dentistry',
-        'Dental Technology',
-        'Treatment Tips'
-    ];
+    const queryClient = useQueryClient()
 
     const handleSearch = useCallback((e?: React.FormEvent) => {
-        if (e) e.preventDefault();
+        console.log('handleSearch called', { e: e?.type, searchQuery, category, sortBy, sortOrder });
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
 
         onSearch({
             search: searchQuery.trim() || undefined,
@@ -48,10 +44,12 @@ const BlogSearch: React.FC<BlogSearchProps> = ({ onSearch, loading = false, clas
             sortBy: 'publishedAt',
             sortOrder: 'desc'
         });
+        queryClient.invalidateQueries({ queryKey: ['blogs'] })
     };
+    const { data: categories = { data: [] }, isLoading } = useQuery({ queryKey: ['blog-categories'], queryFn: BlogsService.getBlogCategories })
 
     const hasActiveFilters = searchQuery || category || sortBy !== 'publishedAt' || sortOrder !== 'desc';
-
+    ``
     return (
         <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 ${className}`}>
             {/* Search Input */}
@@ -97,7 +95,7 @@ const BlogSearch: React.FC<BlogSearchProps> = ({ onSearch, loading = false, clas
                         className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                         <option value="">All Categories</option>
-                        {categories.map((cat) => (
+                        {categories?.data?.map((cat) => (
                             <option key={cat} value={cat}>
                                 {cat}
                             </option>
@@ -139,11 +137,10 @@ const BlogSearch: React.FC<BlogSearchProps> = ({ onSearch, loading = false, clas
                         <option value="asc">Oldest First</option>
                     </select>
                 </div>
-            </div>
-
-            {/* Action Buttons */}
+            </div>            {/* Action Buttons */}
             <div className="flex flex-wrap gap-3 items-center">
                 <button
+                    type="button"
                     onClick={handleSearch}
                     disabled={loading}
                     className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
@@ -156,6 +153,7 @@ const BlogSearch: React.FC<BlogSearchProps> = ({ onSearch, loading = false, clas
 
                 {hasActiveFilters && (
                     <button
+                        type="button"
                         onClick={handleClearFilters}
                         className="text-gray-600 hover:text-gray-800 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
                     >

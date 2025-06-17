@@ -39,4 +39,8 @@ export class BlogsService {
     const response = await axiosInstance.get(`/blogs/search?${searchParams.toString()}`);
     return response.data;
   }
+  static async getBlogCategories(): Promise<{ data: [] }> {
+    const response = await axiosInstance.get(`/blogs/categories`);
+    return response.data;
+  }
 }

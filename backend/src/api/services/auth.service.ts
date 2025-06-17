@@ -138,9 +138,8 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
-
     // For dentists, check if profile is verified by admin
-    if (user.role === 'DENTIST') {
+    if (user.role === 'dentist') {
       const dentistProfile = await this.prisma.dentistProfile.findUnique({
         where: { userId: user.id },
       });

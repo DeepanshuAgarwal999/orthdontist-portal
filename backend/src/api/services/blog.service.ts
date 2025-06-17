@@ -134,7 +134,6 @@ export class BlogService {
             firstName: true,
             lastName: true,
             email: true,
-            role: true,
           },
         },
       },
@@ -476,5 +475,26 @@ export class BlogService {
     });
 
     return blogs;
+  }
+
+  // Get unique blog categories
+  async getBlogCategories() {
+    const categories = await this.prisma.blog.findMany({
+      where: {
+        category: { not: null },
+        status: BlogStatus.PUBLISHED, // Only get categories from published blogs
+      },
+      select: {
+        category: true,
+      },
+      distinct: ['category'],
+      orderBy: {
+        category: 'asc',
+      },
+    });
+
+    return categories
+      .map((blog) => blog.category)
+      .filter((category): category is string => !!category);
   }
 }

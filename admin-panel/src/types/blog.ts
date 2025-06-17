@@ -3,6 +3,7 @@ export interface Blog {
   title: string;
   content: string;
   excerpt?: string;
+  category?: string;
   featuredImage?: string;
   author: {
     id: string;
@@ -21,6 +22,7 @@ export interface CreateBlogRequest {
   title: string;
   content: string;
   excerpt?: string;
+  category?: string;
   featuredImage?: string;
   status: "DRAFT" | "PUBLISHED";
   tags?: string[];
@@ -30,6 +32,7 @@ export interface UpdateBlogRequest {
   title?: string;
   content?: string;
   excerpt?: string;
+  category?: string;
   featuredImage?: string;
   status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   tags?: string[];

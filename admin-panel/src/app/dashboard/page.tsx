@@ -13,18 +13,23 @@ import {
     Edit
 } from 'lucide-react';
 import { BlogService } from '@/services/blog.service';
+import axiosInstance from '@/lib/axios';
 
 const DashboardPage: React.FC = () => {
     const { data: blogStats } = useQuery({
         queryKey: ['blog-statistics'],
         queryFn: () => BlogService.getBlogStatistics(),
     });
-
-    const { data: recentBlogs } = useQuery({
-        queryKey: ['recent-blogs'],
-        queryFn: () => BlogService.getAllBlogs({ limit: 5 }),
-    });
-
+    const { data: dentists } = useQuery({
+        queryKey: ['dentists'],
+        queryFn: async () => await axiosInstance.get('/dentists')
+    })
+    const { data: users } = useQuery({
+        queryKey: ['users'],
+        queryFn: async () => await axiosInstance.get('/users')
+    })
+    const totalDentists = dentists?.data.data.length || 0
+    const totalUsers = users?.data.totalUsers || 0
     const stats = blogStats?.data;
 
     return (
@@ -50,7 +55,7 @@ const DashboardPage: React.FC = () => {
                                         Total Users
                                     </dt>
                                     <dd className="text-lg font-medium text-gray-900">
-                                        Loading...
+                                        {totalUsers}
                                     </dd>
                                 </dl>
                             </div>
@@ -72,7 +77,7 @@ const DashboardPage: React.FC = () => {
                                         Total Dentists
                                     </dt>
                                     <dd className="text-lg font-medium text-gray-900">
-                                        Loading...
+                                        {totalDentists}
                                     </dd>
                                 </dl>
                             </div>
@@ -94,7 +99,7 @@ const DashboardPage: React.FC = () => {
                                         Total Blogs
                                     </dt>
                                     <dd className="text-lg font-medium text-gray-900">
-                                        {stats?.total || 'Loading...'}
+                                        {stats?.totalBlogs || 'Loading...'}
                                     </dd>
                                 </dl>
                             </div>
@@ -116,7 +121,7 @@ const DashboardPage: React.FC = () => {
                                         Published Blogs
                                     </dt>
                                     <dd className="text-lg font-medium text-gray-900">
-                                        {stats?.published || 'Loading...'}
+                                        {stats?.publishedBlogs || 'Loading...'}
                                     </dd>
                                 </dl>
                             </div>
@@ -146,13 +151,7 @@ const DashboardPage: React.FC = () => {
                             <FileText className="w-5 h-5 mr-2 text-purple-600" />
                             Manage Blogs
                         </Link>
-                        <Link
-                            href="/dashboard/users"
-                            className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            <Users className="w-5 h-5 mr-2 text-blue-600" />
-                            Manage Users
-                        </Link>
+
                         <Link
                             href="/dashboard/dentists"
                             className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"

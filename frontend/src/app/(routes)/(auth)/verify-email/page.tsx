@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AuthLayout from '@/components/auth/AuthLayout';
-import { axiosInstance } from '@/config/axios.instance';
 import { useMutation } from '@tanstack/react-query';
 import { UserService } from '@/service/user.service';
 

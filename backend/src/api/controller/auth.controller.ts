@@ -37,9 +37,11 @@ export class AuthController {
   async login(@Body(ValidationPipe) loginDto: LoginDto, @Res() res: Response) {
     const result = await this.authService.login(loginDto);
 
-    // Set access token in HTTP-only cookie
-    CookieHelper.setAccessTokenCookie(res, result.token, 30 * 24 * 60 * 60);
-
+    if (result.user.role.includes('admin')) {
+      CookieHelper.setAccessTokenCookie(res, result.token, 1 * 24 * 60 * 60);
+    } else {
+      CookieHelper.setAccessTokenCookie(res, result.token, 30 * 24 * 60 * 60);
+    }
     return res.status(HttpStatus.OK).json(result);
   }
 

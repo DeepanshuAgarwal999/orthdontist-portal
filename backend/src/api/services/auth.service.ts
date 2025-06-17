@@ -169,7 +169,7 @@ export class AuthService {
     };
   }
   generateToken(userId: string, role: UserRole): string {
-    const payload = { sub: userId, role };
+    const payload = { id: userId, role };
     return this.jwtService.sign(payload);
   }
 
@@ -177,7 +177,7 @@ export class AuthService {
     try {
       const payload = await this.jwtService.verifyAsync(token);
       const user = await this.prisma.user.findUnique({
-        where: { id: payload.sub },
+        where: { id: payload.id },
       });
 
       if (!user) {

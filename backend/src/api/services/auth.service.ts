@@ -27,16 +27,8 @@ export class AuthService {
   ) {}
 
   async signup(signupDto: SignupDto) {
-    const {
-      email,
-      password,
-      firstName,
-      lastName,
-      role,
-      phone,
-      licenseNumber,
-      location,
-    } = signupDto;
+    const { email, password, firstName, lastName, role, phone, location } =
+      signupDto;
 
     // Check if user already exists
     const existingUser = await this.prisma.user.findUnique({
@@ -53,7 +45,7 @@ export class AuthService {
 
     // Generate verification token
     const verificationToken = crypto.randomBytes(32).toString('hex');
-    const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    const verificationTokenExpiry = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours
 
     // Create new user
     const user = await this.prisma.user.create({
@@ -67,16 +59,6 @@ export class AuthService {
         isEmailVerified: false,
         emailVerificationToken: verificationToken,
         emailVerificationExpiry: verificationTokenExpiry,
-        ...(role === UserRole.DENTIST && {
-          DentistProfile: {
-            create: {
-              licenseNumber,
-              location,
-              isVerified: false,
-              openingHours: '{}', // Add required openingHours field with empty object as default
-            },
-          },
-        }),
       },
     });
 
@@ -99,15 +81,12 @@ export class AuthService {
     return {
       success: true,
       message:
-        role === UserRole.DENTIST
-          ? 'Account created successfully. Please check your email to verify your account and wait for admin approval.'
-          : 'Account created successfully. Please check your email to verify your account.',
+        'Account created successfully. Please check your email to verify your account.',
       user: {
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        role: user.role,
         isEmailVerified: user.isEmailVerified,
       },
     };
@@ -137,18 +116,6 @@ export class AuthService {
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
-    }
-    // For dentists, check if profile is verified by admin
-    if (user.role === 'dentist') {
-      const dentistProfile = await this.prisma.dentistProfile.findUnique({
-        where: { userId: user.id },
-      });
-
-      if (!dentistProfile?.isVerified) {
-        throw new UnauthorizedException(
-          'Your dentist account is pending admin approval',
-        );
-      }
     }
 
     // Generate token
@@ -312,7 +279,6 @@ export class AuthService {
         firstName: updatedUser.firstName,
         lastName: updatedUser.lastName,
         email: updatedUser.email,
-        role: updatedUser.role,
         isEmailVerified: updatedUser.isEmailVerified,
       },
     };

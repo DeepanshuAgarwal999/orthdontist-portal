@@ -90,6 +90,7 @@ export class BlogService {
       authorId,
       page = '1',
       limit = '10',
+      isForDentist,
       sortBy = 'createdAt',
       sortOrder = 'desc',
     } = query;
@@ -121,22 +122,16 @@ export class BlogService {
       where.authorId = authorId;
     }
 
+    if (isForDentist !== undefined) {
+      where.isForDentist = isForDentist;
+    }
+
     // Get total count for pagination
     const total = await this.prisma.blog.count({ where });
 
     // Get blogs
     const blogs = await this.prisma.blog.findMany({
       where,
-      include: {
-        author: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-          },
-        },
-      },
       orderBy: { [sortBy]: sortOrder },
       skip,
       take: limitNum,
@@ -164,7 +159,7 @@ export class BlogService {
   }
 
   // Get blog by ID
-  async getBlogById(id: string) {
+  async getBlogById(id: string, userRole?: UserRole) {
     const blog = await this.prisma.blog.findUnique({
       where: { id },
       include: {
@@ -173,8 +168,6 @@ export class BlogService {
             id: true,
             firstName: true,
             lastName: true,
-            email: true,
-            role: true,
           },
         },
       },
@@ -183,7 +176,10 @@ export class BlogService {
     if (!blog) {
       throw new NotFoundException('Blog not found');
     }
-
+    if (!userRole && blog.isForDentist) {
+      throw new ForbiddenException('You can only view public blogs');
+    }
+    
     if (blog.status === BlogStatus.PUBLISHED) {
       await this.prisma.blog.update({
         where: { id },
@@ -198,19 +194,10 @@ export class BlogService {
   async getBlogBySlug(slug: string, userRole?: UserRole) {
     const blog = await this.prisma.blog.findUnique({
       where: { slug },
-      include: {
-        author: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-            role: true,
-          },
-        },
-      },
     });
-
+    if (!userRole && blog.isForDentist) {
+      throw new ForbiddenException('You can only view public blogs');
+    }
     if (!blog) {
       throw new NotFoundException('Blog not found');
     }
@@ -279,7 +266,6 @@ export class BlogService {
             firstName: true,
             lastName: true,
             email: true,
-            role: true,
           },
         },
       },
@@ -319,7 +305,6 @@ export class BlogService {
             firstName: true,
             lastName: true,
             email: true,
-            role: true,
           },
         },
       },
@@ -448,28 +433,15 @@ export class BlogService {
         { tags: { has: query } },
       ],
     };
-
+    if (filters.isForDentist !== undefined) {
+      where.isForDentist = filters.isForDentist;
+    }
     if (filters?.category) {
       where.category = { contains: filters.category, mode: 'insensitive' };
     }
 
-    if (filters?.authorId) {
-      where.authorId = filters.authorId;
-    }
-
     const blogs = await this.prisma.blog.findMany({
       where,
-      include: {
-        author: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-            role: true,
-          },
-        },
-      },
       orderBy: { publishedAt: 'desc' },
       take: 20, // Limit search results
     });

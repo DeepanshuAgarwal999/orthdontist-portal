@@ -129,29 +129,105 @@ const HomePage: React.FC = () => {
             {/* Stats Section */}
             <section className="pt-20 bg-gradient-to-r from-primary-600 to-primary-700">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center text-white">
+                    <div className="grid grid-cols-2  lg:grid-cols-4 gap-8 text-center text-primary">
                         <div>
                             <div className="text-4xl font-bold mb-2">10K+</div>
-                            <div className="text-primary-100">Verified Professionals</div>
+                            <div className="text-neutral-700">Verified Professionals</div>
                         </div>
                         <div>
                             <div className="text-4xl font-bold mb-2">500+</div>
-                            <div className="text-primary-100">Cities Covered</div>
+                            <div className="text-neutral-700">Cities Covered</div>
                         </div>
                         <div>
                             <div className="text-4xl font-bold mb-2">1M+</div>
-                            <div className="text-primary-100">Patients Served</div>
+                            <div className="text-neutral-700">Patients Served</div>
                         </div>
                         <div>
                             <div className="text-4xl font-bold mb-2">4.9★</div>
-                            <div className="text-primary-100">Average Rating</div>
+                            <div className="text-neutral-700">Average Rating</div>
                         </div>
                     </div>
                 </div>
             </section>
 
+            {/* Treatment Benefits Section */}
+            <section className="py-20 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">
+                            Advanced Treatment Options
+                        </h2>
+                        <p className="text-xl text-neutral-600 max-w-2xl mx-auto">
+                            Experience the latest in dental technology and convenient payment options
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {/* Invisible Braces */}
+                        <div className="text-center group">
+                            <div className="relative mb-8">
+                                <div className="w-48 h-48 mx-auto bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center overflow-hidden relative">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-orange-400/20 to-orange-600/20 rounded-full"></div>
+                                    <div className="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center">
+                                        <ToothIcon size={48} className="text-white" />
+                                    </div>
+                                    {/* Decorative circles */}
+                                    <div className="absolute top-4 right-4 w-8 h-8 bg-orange-300 rounded-full opacity-60"></div>
+                                    <div className="absolute bottom-6 left-6 w-4 h-4 bg-orange-200 rounded-full opacity-80"></div>
+                                </div>
+                            </div>
+                            <h3 className="text-2xl font-bold text-neutral-900 mb-4">Invisible Braces!</h3>
+                            <p className="text-neutral-600 mb-6 leading-relaxed">
+                                <strong>ALIGNER360</strong> Aligners are super transparent and almost invisible to keep you confident & smile.
+                            </p>
+                        </div>
+                        {/* Fast Treatment */}
+                        <div className="text-center group">
+                            <div className="relative mb-8">
+                                <div className="w-48 h-48 mx-auto bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center overflow-hidden relative">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-orange-400/20 to-orange-600/20 rounded-full"></div>
+                                    <div className="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center">
+                                        <TrendingUpIcon size={48} className="text-white" />
+                                    </div>
+                                    {/* Decorative circles */}
+                                    <div className="absolute top-4 right-4 w-8 h-8 bg-orange-300 rounded-full opacity-60"></div>
+                                    <div className="absolute bottom-6 left-6 w-4 h-4 bg-orange-200 rounded-full opacity-80"></div>
+                                </div>
+                            </div>
+                            <h3 className="text-2xl font-bold text-neutral-900 mb-4">Fast Treatment!</h3>
+                            <p className="text-neutral-600 mb-6 leading-relaxed">
+                                <strong>ALIGNER360</strong> Aligners are as fast as braces. Get the shortest possible treatment time with AI enabled systems.
+                            </p>
+                        </div>
+
+                        {/* Pay in easy EMI */}
+                        <div className="text-center group">
+                            <div className="relative mb-8">
+                                <div className="w-48 h-48 mx-auto bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center overflow-hidden relative">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-orange-400/20 to-orange-600/20 rounded-full"></div>
+                                    <div className="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center">
+                                        <svg className="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" />
+                                        </svg>
+                                    </div>
+                                    {/* Decorative circles */}
+                                    <div className="absolute top-4 right-4 w-8 h-8 bg-orange-300 rounded-full opacity-60"></div>
+                                    <div className="absolute bottom-6 left-6 w-4 h-4 bg-orange-200 rounded-full opacity-80"></div>
+                                </div>
+                            </div>
+                            <h3 className="text-2xl font-bold text-neutral-900 mb-4">Pay in easy EMI</h3>
+                            <p className="text-neutral-600 mb-6 leading-relaxed">
+                                We provide affordable payment plans with our finance partners in the form of no cost 0% EMI.
+                            </p>
+                        </div>
+                    </div>
+
+                 
+                </div>
+            </section >
+
             {/* CTA Section */}
-            <section className="pb-20">
+            <section className="py-20">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-6">
                         Ready to Transform Your Dental Experience?
@@ -177,7 +253,7 @@ const HomePage: React.FC = () => {
 
             {/* Footer */}
 
-        </div>
+        </div >
     );
 };
 

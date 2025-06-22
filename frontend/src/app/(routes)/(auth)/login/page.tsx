@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AuthLayout from '@/components/auth/AuthLayout';
 import LoginForm from '@/components/auth/LoginForm';
@@ -14,7 +14,7 @@ interface LoginFormData {
     rememberMe: boolean;
 }
 
-const LoginPage: React.FC = () => {
+const Login: React.FC = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [error, setError] = useState<string | null>(null);
@@ -84,5 +84,11 @@ const LoginPage: React.FC = () => {
         </AuthLayout>
     );
 };
-
+const LoginPage = () => {
+    return (
+        <Suspense>
+            <Login />
+        </Suspense>
+    )
+}
 export default LoginPage;

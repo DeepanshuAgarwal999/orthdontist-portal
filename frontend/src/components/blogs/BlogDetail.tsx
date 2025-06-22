@@ -142,19 +142,7 @@ const BlogDetail: React.FC<BlogDetailProps> = ({ blog: initialBlog, slug, classN
 
                 {/* Meta Information */}
                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 pb-6 border-b border-gray-200">
-                    <div className="flex items-center">
-                        <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center mr-3">
-                            <span className="text-sm font-medium text-gray-700">
-                                {blog.author.firstName[0]}{blog.author.lastName[0]}
-                            </span>
-                        </div>
-                        <div>
-                            <p className="font-medium text-gray-900">
-                                {blog.author.firstName} {blog.author.lastName}
-                            </p>
-                            <p className="text-xs">{blog.author.role}</p>
-                        </div>
-                    </div>
+                  
 
                     <div className="flex items-center space-x-4">
                         <span>{formatDate(blog.publishedAt || blog.createdAt)}</span>

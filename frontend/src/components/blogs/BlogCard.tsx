@@ -53,14 +53,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, className = '' }) => {
             <div className="p-6">
                 {/* Meta Information */}
                 <div className="flex items-center text-sm text-gray-500 mb-3">
-                    <div className="flex items-center">
-                        <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center mr-2">
-                            <span className="text-xs font-medium text-gray-700">
-                                {blog.author.firstName[0]}{blog.author.lastName[0]}
-                            </span>
-                        </div>
-                        <span>{blog.author.firstName} {blog.author.lastName}</span>
-                    </div>
+
                     <span className="mx-2">•</span>
                     <span>{formatDate(blog.publishedAt || blog.createdAt)}</span>
                     <span className="mx-2">•</span>

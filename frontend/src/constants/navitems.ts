@@ -8,6 +8,10 @@ export const NAV_ITEMS = [
     href: "/orthodontist-list",
   },
   {
+    name: "Courses",
+    href: "/dentists/courses",
+  },
+  {
     name: "Contact Us",
     href: "/contact",
   },

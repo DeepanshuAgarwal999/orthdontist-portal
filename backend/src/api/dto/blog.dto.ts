@@ -1,5 +1,7 @@
+import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsBoolean,
   IsEnum,
   IsNotEmpty,
   IsOptional,
@@ -64,6 +66,11 @@ export class CreateBlogDto {
   @IsString()
   @MaxLength(160)
   metaDescription?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @Type(() => Boolean)
+  isForDentist?: boolean;
 }
 
 export class UpdateBlogDto {
@@ -115,6 +122,11 @@ export class UpdateBlogDto {
   @IsString()
   @MaxLength(160)
   metaDescription?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @Type(() => Boolean)
+  isForDentist?: boolean;
 }
 
 export class BlogQueryDto {
@@ -145,6 +157,11 @@ export class BlogQueryDto {
   @IsOptional()
   @IsString()
   sortBy?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @Type(() => Boolean)
+  isForDentist?: boolean;
 
   @IsOptional()
   @IsString()

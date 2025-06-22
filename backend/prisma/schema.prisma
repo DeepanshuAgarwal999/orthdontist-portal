@@ -39,51 +39,14 @@ model User {
   updatedAt                DateTime  @updatedAt
   
   // Relations
+  liveSessions             LiveSession[]    @relation("UserLiveSessions")
+  ebooks                   Ebook[]          @relation("UserEbooks")
   blogs                    Blog[]           @relation("UserBlogs")
-  DentistProfile           DentistProfile?  @relation("UserDentistProfile")
+  courses                  Course[]         @relation("UserCourses")
+  courseEnrollments        CourseEnrollment[] @relation("UserCourseEnrollments")
 }
 
-model DentistProfile {
-  id                String     @id @default(auto()) @map("_id") @db.ObjectId
-  
-  // Basic Info
-  licenseNumber     String?    // Dental license number
-  clinicName        String?
-  phoneNumber       String?
-  
-  // Address
-  address           String?
-  city              String?
-  state             String?
-  zipCode           String?
-  location          String?    // Simple location string from signup
-  latitude          Float?     // For map display
-  longitude         Float?     // For map display
-  
-  // Business Hours (stored as JSON for flexibility)
-  openingHours      Json       // {"monday": "9:00-17:00", "tuesday": "9:00-17:00", etc.}
-  
-  // Optional details
-  description       String?    // Brief description (max 200 chars)
-  specialties       String[]   // e.g., ["General Dentistry", "Orthodontics"]
-  website           String?
-  
-  // Status
-  isActive          Boolean    @default(true)
-  isVerified        Boolean    @default(false) // Admin verification
-  
-  // Relations
-  userId            String     @unique @db.ObjectId
-  user              User       @relation("UserDentistProfile", fields: [userId], references: [id], onDelete: Cascade)
-  
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
-  
-  @@index([city])
-  @@index([isActive])
-  @@index([isVerified])
-  @@index([latitude, longitude])
-}
+
 
 model Blog {
   id            String      @id @default(auto()) @map("_id") @db.ObjectId
@@ -97,7 +60,7 @@ model Blog {
   featuredImage String?     // URL to featured image
   metaTitle     String?     // SEO meta title
   metaDescription String?   // SEO meta description
-  
+  isForDentist     Boolean     @default(false)
   // Author information
   authorId      String      @db.ObjectId
   author        User        @relation("UserBlogs", fields: [authorId], references: [id], onDelete: Cascade)
@@ -115,6 +78,240 @@ model Blog {
   @@index([publishedAt])
   @@index([category])
   @@index([authorId])
+}
+
+
+model Course {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  description     String
+  shortDescription String?      // Brief overview for course cards
+  slug            String        @unique // URL-friendly version of title
+  
+  // Course Content
+  content         String        // Detailed course content/curriculum
+  tags            String[]      // Array of tags for better organization
+  
+  // Media
+  thumbnailImage  String?       // Course thumbnail/cover image
+  videoUrl        String?       // Main course video URL
+  videoFile       String?       // Uploaded video file URL
+  
+  // Pricing
+  price           Float         @default(0)
+  currency        String        @default("USD")
+  isFreeCourse    Boolean       @default(false)
+  
+  // Course Settings
+  status          CourseStatus  @default(DRAFT)
+  isActive        Boolean       @default(true)
+  maxEnrollments  Int?          // Maximum number of enrollments (null = unlimited)
+  
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  
+  
+  createdById     String        @db.ObjectId
+  createdBy       User          @relation("UserCourses", fields: [createdById], references: [id], onDelete: Cascade)
+  
+  // Relations
+  enrollments     CourseEnrollment[] @relation("CourseEnrollments")
+  
+  // Analytics
+  enrollmentCount Int           @default(0)
+  viewCount       Int           @default(0)
+  rating          Float?        // Average rating
+  reviewCount     Int           @default(0)
+  
+  // Timestamps
+  publishedAt     DateTime?     // When the course was published
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  @@index([status])
+  @@index([isActive])
+  @@index([publishedAt])
+  @@index([createdById])
+  @@index([price])
+}
+
+model Ebook {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  description     String
+  shortDescription String?      // Brief overview for ebook cards
+  slug            String        @unique
+  
+  // Ebook Content
+  language        String        @default("English")
+  tags            String[]      // Array of tags for better organization
+  
+  // Media Files
+  pdf             String?       // PDF file URL/path
+  thumbnailImage  String?       // Ebook thumbnail image
+  video           String?       // Optional video URL
+  courseAttachmentUrl String?   // Optional course attachment
+  previewImages   String[]      // Array of preview images
+  
+  // Pricing & Access
+  price           Float         @default(0)
+  currency        String        @default("INR")
+  isFree          Boolean       @default(false)
+  isFreeEbook     Boolean       @default(false)
+  
+  // Ebook Settings
+  status          EbookStatus   @default(DRAFT)
+  isActive        Boolean       @default(true)
+  isDownloadable  Boolean       @default(true)
+  maxDownloads    Int?          // Maximum downloads per user (null = unlimited)
+  
+  // SEO & Meta
+  metaTitle       String?
+  metaDescription String?
+  publishedDate   DateTime?
+
+  uploadedById    String        @db.ObjectId
+  uploadedBy      User          @relation("UserEbooks", fields: [uploadedById], references: [id], onDelete: Cascade)
+  
+  // Analytics
+  downloadCount   Int           @default(0)
+  viewCount       Int           @default(0)
+  rating          Float?        // Average rating
+  reviewCount     Int           @default(0)
+  
+  // Timestamps
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  @@index([status])
+  @@index([isActive])
+  @@index([isFree])
+  @@index([isFreeEbook])
+  @@index([uploadedById])
+  @@index([price])
+}
+
+model LiveSession {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  description     String 
+  slug            String        @unique // URL-friendly version of title
+  
+  // Session Details
+  topic           String        // Main topic or subject
+  category        String        // e.g., "General Dentistry", "Orthodontics", "Oral Surgery"
+  tags            String[]      // Array of tags for better organization
+  
+  // Session Timing
+  scheduledAt     DateTime      // When the session is scheduled
+  duration        Int           // Duration in minutes
+  timezone        String        @default("UTC") // Timezone for the session
+  
+  // Google Meet Integration
+  meetLink        String        // Google Meet link
+  meetId          String?       // Google Meet ID (extracted from link)
+  
+  // Session Settings
+  status          SessionStatus @default(SCHEDULED)
+  isActive        Boolean       @default(true)
+  maxParticipants Int?          // Maximum participants (null = unlimited)
+  isRecorded      Boolean       @default(false)
+  recordingUrl    String?       // URL to session recording
+  
+  // Access Control
+  isFree          Boolean       @default(false)
+  price           Float         @default(0)
+  currency        String        @default("INR")
+  
+  // Materials
+  thumbnailImage  String?     
+  materials       String[]      // Array of material URLs (PDFs, documents)
+  
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  
+  // Creator Information
+  createdById     String        @db.ObjectId
+  createdBy       User          @relation("UserLiveSessions", fields: [createdById], references: [id], onDelete: Cascade)
+  
+  // Analytics
+  registrationCount Int         @default(0)
+  attendanceCount   Int         @default(0)
+  
+  // Timestamps
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  @@index([status])
+  @@index([category])
+  @@index([scheduledAt])
+  @@index([isActive])
+  @@index([createdById])
+  @@index([isFree])
+}
+
+model CourseEnrollment {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // User and Course references
+  userId       String   @db.ObjectId
+  user         User     @relation("UserCourseEnrollments", fields: [userId], references: [id], onDelete: Cascade)
+  courseId     String   @db.ObjectId
+  course       Course   @relation("CourseEnrollments", fields: [courseId], references: [id], onDelete: Cascade)
+  
+  // Enrollment details
+  enrolledAt   DateTime @default(now())
+  status       EnrollmentStatus @default(ACTIVE)
+  
+  // Progress tracking
+  progress     Int      @default(0) // Progress percentage (0-100)
+  completedAt  DateTime?
+  
+  // Payment info (if needed)
+  paymentId    String?  // External payment reference
+  amountPaid   Float?   // Amount paid for the course
+  
+  // Timestamps
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@unique([userId, courseId]) // Prevent duplicate enrollments
+  @@index([userId])
+  @@index([courseId])
+  @@index([status])
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum SessionStatus {
+  SCHEDULED
+  LIVE
+  COMPLETED
+  CANCELLED
+  POSTPONED
+}
+
+
+enum EbookStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+  UNDER_REVIEW
+}
+
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+  UNDER_REVIEW
 }
 
 enum BlogStatus {

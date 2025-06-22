@@ -196,7 +196,7 @@ export default function BlogDetailPage() {
                     Back to all blogs
                 </Link>
                 <div className="flex gap-3">
-                    {blog.status === 'published' && (
+                    {blog.status === 'PUBLISHED' && (
                         <a
                             href={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/blogs/${blog.id}`}
                             target="_blank"

@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AuthLayout from '@/components/auth/AuthLayout';
 import { useMutation } from '@tanstack/react-query';
 import { AuthService } from '@/services/auth.service';
 
-const VerifyEmailPage: React.FC = () => {
+const VerifyEmail: React.FC = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [success, setSuccess] = useState(false);
@@ -138,5 +138,11 @@ const VerifyEmailPage: React.FC = () => {
         </div>
     );
 };
-
+const VerifyEmailPage = () => {
+    return (
+        <Suspense>
+            <VerifyEmail />
+        </Suspense>
+    )
+}
 export default VerifyEmailPage;

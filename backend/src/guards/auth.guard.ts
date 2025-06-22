@@ -11,8 +11,7 @@ import { CookieHelper } from '../helpers/cookies.helper';
 
 export enum UserRole {
   ADMIN = 'admin',
-  DENTIST = 'dentist',
-  PATIENT = 'patient',
+  USER = 'user',
 }
 @Injectable()
 export class AuthGuard implements CanActivate {

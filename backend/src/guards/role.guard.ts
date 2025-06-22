@@ -10,8 +10,6 @@ import { UserRole } from './auth.guard';
 
 export const Roles = (...roles: UserRole[]) => SetMetadata('roles', roles);
 
-export const DentistAdminRoles = () =>
-  SetMetadata('roles', [UserRole.ADMIN, UserRole.DENTIST]);
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -51,35 +49,3 @@ export class RolesGuard implements CanActivate {
   }
 }
 
-/**
- * Guard specifically for dentist or admin access
- * Usage: @UseGuards(AuthGuard, DentistAdminGuard)
- */
-@Injectable()
-export class DentistAdminGuard implements CanActivate {
-  constructor() {}
-
-  canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
-
-    // Ensure user exists and has a role
-    if (!user || !user.role) {
-      throw new UnauthorizedException(
-        'User not authenticated or role not defined',
-      );
-    }
-
-    // Check if the user's role is either ADMIN or DENTIST
-    const hasRequiredRole =
-      user.role === UserRole.ADMIN || user.role === UserRole.DENTIST;
-
-    if (!hasRequiredRole) {
-      throw new UnauthorizedException(
-        `Access denied. Required role: ${UserRole.ADMIN} or ${UserRole.DENTIST}`,
-      );
-    }
-
-    return true;
-  }
-}

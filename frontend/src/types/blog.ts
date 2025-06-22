@@ -11,13 +11,6 @@ export interface Blog {
   metaTitle?: string;
   metaDescription?: string;
   authorId: string;
-  author: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: string;
-  };
   viewCount: number;
   likeCount: number;
   publishedAt?: string;

@@ -270,7 +270,17 @@ export class BlogController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const blog = await this.blogService.getBlogById(id);
+    let userRole: UserRole | undefined;
+    try {
+      const token = req.cookies?.access_token;
+
+      if (token && req.user) {
+        userRole = req.user.role;
+      }
+    } catch (error) {
+      // User is not authenticated, continue as public user
+    }
+    const blog = await this.blogService.getBlogById(id,userRole);
 
     return res.status(HttpStatus.OK).json({
       success: true,

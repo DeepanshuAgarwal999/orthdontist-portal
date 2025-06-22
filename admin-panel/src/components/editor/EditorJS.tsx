@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
+import { FileUploadService } from '@/services/file-upload.service';
 // @ts-ignore
 import EditorJS from '@editorjs/editorjs';
 
@@ -101,43 +102,74 @@ const EditorJSComponent = forwardRef<EditorJSRef, EditorJSProps>(({ data, onChan
                     config: {
                         defaultStyle: 'unordered',
                     },
-                },
-                image: {
+                }, image: {
                     class: ImageTool,
                     config: {
-                        endpoints: {
-                            byFile: '/api/upload', // Your upload endpoint
-                        },
                         field: 'file',
                         types: 'image/*',
                         captionPlaceholder: 'Enter image caption',
                         buttonContent: 'Select an Image',
                         uploader: {
                             uploadByFile: async (file: File) => {
-                                const formData = new FormData();
-                                formData.append('file', file);
-
                                 try {
-                                    const response = await fetch('/api/upload', {
-                                        method: 'POST',
-                                        body: formData,
-                                    });
-
-                                    if (!response.ok) {
-                                        throw new Error('Upload failed');
+                                    // Validate file type
+                                    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                                    if (!allowedTypes.includes(file.type)) {
+                                        throw new Error('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
                                     }
 
-                                    const result = await response.json();
+                                    // Validate file size (10MB for content images)
+                                    if (file.size > 10 * 1024 * 1024) {
+                                        throw new Error('Image file size must be less than 10MB');
+                                    }
+
+                                    const response = await FileUploadService.uploadFile({
+                                        file,
+                                        folder: "blog-content-images",
+                                        tags: ["blog", "content"]
+                                    });
+
                                     return {
                                         success: 1,
                                         file: {
-                                            url: result.link,
+                                            url: response.url,
                                         },
                                     };
                                 } catch (error) {
+                                    console.error('Image upload failed:', error);
+                                    const errorMessage = error instanceof Error ? error.message : 'Failed to upload image. Please try again.';
                                     return {
                                         success: 0,
-                                        error: 'Upload failed',
+                                        error: errorMessage,
+                                    };
+                                }
+                            },
+                            uploadByUrl: async (url: string) => {
+                                try {
+                                    // Extract filename from URL
+                                    const urlObj = new URL(url);
+                                    const pathname = urlObj.pathname;
+                                    const filename = pathname.split('/').pop() || 'image.jpg';
+
+                                    const response = await FileUploadService.uploadFromUrl({
+                                        url,
+                                        fileName: filename,
+                                        folder: "blog-content-images",
+                                        useUniqueFileName: true,
+                                        tags: ["blog", "content"]
+                                    });
+
+                                    return {
+                                        success: 1,
+                                        file: {
+                                            url: response.url,
+                                        },
+                                    };
+                                } catch (error) {
+                                    console.error('Image upload from URL failed:', error);
+                                    return {
+                                        success: 0,
+                                        error: 'Failed to upload image from URL. Please try again.',
                                     };
                                 }
                             },

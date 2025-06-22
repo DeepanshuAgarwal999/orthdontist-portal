@@ -38,7 +38,8 @@ const BlogList: React.FC<BlogListProps> = ({
     const handlePageChange = (page: number) => {
         setFilters(prev => ({ ...prev, page }));
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    }; const handleSearchFilters = (newFilters: BlogQueryParams) => {
+    };
+    const handleSearchFilters = (newFilters: BlogQueryParams) => {
         const updatedFilters = { ...filters, ...newFilters, limit: itemsPerPage };
         setFilters(updatedFilters);
 

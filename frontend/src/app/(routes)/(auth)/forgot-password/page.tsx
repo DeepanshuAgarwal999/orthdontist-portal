@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AuthLayout from '@/components/auth/AuthLayout';
 import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm';
@@ -11,7 +11,7 @@ interface ForgotPasswordFormData {
     email: string;
 }
 
-const ForgotPasswordPage: React.FC = () => {
+const ForgotPassword: React.FC = () => {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
@@ -139,5 +139,14 @@ const ForgotPasswordPage: React.FC = () => {
         </AuthLayout>
     );
 };
+
+
+const ForgotPasswordPage = () => {
+    return (
+        <Suspense>
+            <ForgotPassword />
+        </Suspense>
+    )
+}
 
 export default ForgotPasswordPage;

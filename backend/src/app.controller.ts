@@ -20,7 +20,9 @@ export class AppController {
   @Roles(UserRole.ADMIN)
   @Get('users')
   async getUsers() {
-    const totalUsers = await this.prismaService.user.count();
+    const totalUsers = await this.prismaService.user.count({
+      where: { NOT: { role: UserRole.ADMIN } },
+    });
     return {
       success: true,
       totalUsers,

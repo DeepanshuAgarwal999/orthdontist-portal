@@ -15,6 +15,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { ImageKitService } from './services/imagekit.service';
 import { UserController } from './controller/user.controller';
 import { MapService } from './services/map.service';
+import { ContactService } from './services/contact.service';
 
 @Module({
   imports: [PrismaModule],
@@ -35,7 +36,8 @@ import { MapService } from './services/map.service';
     LiveSessionService,
     EmailService,
     ImageKitService,
-    MapService
+    MapService,
+    ContactService
   ],
   exports: [
     AuthService,
@@ -45,7 +47,8 @@ import { MapService } from './services/map.service';
     LiveSessionService,
     EmailService,
     ImageKitService,
-    MapService
+    MapService,
+    ContactService
   ],
 })
 export class ApiModule {}

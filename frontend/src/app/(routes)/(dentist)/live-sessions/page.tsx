@@ -87,7 +87,7 @@ const LiveSessionsPage = () => {
         const minutesDiff = Math.floor(timeDiff / (1000 * 60));
 
         // Can join if session is live or starts within 15 minutes
-        return session.status === 'LIVE' || (session.status === 'SCHEDULED' && minutesDiff <= 15 && minutesDiff >= -15);
+        return session.status === 'LIVE' || (session.status === 'SCHEDULED' && minutesDiff <= 15 && minutesDiff >= -60);
     };
 
     if (isLoading) {
@@ -135,7 +135,7 @@ const LiveSessionsPage = () => {
             </div>
 
             {/* Sessions Grid */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 mt-10">
                 {sessions.length === 0 ? (<div className="text-center py-12">
                     <VideoIcon size={64} className="text-neutral-400 mx-auto mb-4" />
                     <h3 className="text-xl font-semibold text-neutral-900 mb-2">No Live Sessions Found</h3>
@@ -164,9 +164,6 @@ const LiveSessionsPage = () => {
                                         <StatusBadge status={session.status} />
                                     </div>
 
-                                    <div className="absolute top-3 right-3 bg-primary-600 text-white px-2 py-1 rounded-full text-xs font-medium">
-                                        {session.category}
-                                    </div>
 
                                     {!session.isFree && (
                                         <div className="absolute bottom-3 left-3 bg-accent-500 text-white px-2 py-1 rounded-full text-xs font-medium">

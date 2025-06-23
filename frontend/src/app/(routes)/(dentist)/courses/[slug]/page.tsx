@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { PublicCourseService } from '@/service/public-course.service';
@@ -50,14 +50,13 @@ const CourseDetailPage: React.FC = () => {
             ) || null;
         },
         enabled: !!user && !!slug,
-    });
-
-    // Enroll mutation
+    });    // Enroll mutation
     const enrollMutation = useMutation({
         mutationFn: (courseId: string) => PublicCourseService.enrollInCourse(courseId),
         onSuccess: () => {
             toast.success('Successfully enrolled in course!');
             queryClient.invalidateQueries({ queryKey: ['course', slug] });
+            queryClient.invalidateQueries({ queryKey: ['my-enrollment', slug] });
         },
         onError: (error: any) => {
             toast.error(error.response?.data?.message || 'Failed to enroll in course');
@@ -104,7 +103,6 @@ const CourseDetailPage: React.FC = () => {
     const course = courseData.data;
     const userEnrollment = enrollmentData;
     const userHasEnrolled = !!userEnrollment;
-
     const handleEnroll = () => {
         if (!user) {
             toast.error('Please login to enroll in courses');
@@ -121,11 +119,14 @@ const CourseDetailPage: React.FC = () => {
             currency: currency,
         }).format(price);
     };
-
-
-    const tabs = [
-        { id: 'overview', label: 'Overview' },
-    ];
+    const tabs = userHasEnrolled
+        ? [
+            { id: 'overview', label: 'Overview' },
+            { id: 'content', label: 'Course Content' },
+        ]
+        : [
+            { id: 'overview', label: 'Overview' },
+        ];
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -140,7 +141,7 @@ const CourseDetailPage: React.FC = () => {
                     Back
                 </Button>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className={`${userEnrollment ? 'max-w-5xl mx-auto' : 'grid'} grid-cols-1 lg:grid-cols-2 gap-8`}>
                     {/* Main Content */}
                     <div className="lg:col-span-2">
                         {/* Course Header */}
@@ -186,7 +187,7 @@ const CourseDetailPage: React.FC = () => {
 
                         {/* Course Video/Image */}
                         <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-                            <div className="relative h-64 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+                            <div className="relative h-96 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
                                 {course.thumbnailImage ? (
                                     <img
                                         src={course.thumbnailImage}
@@ -194,15 +195,15 @@ const CourseDetailPage: React.FC = () => {
                                         className="w-full h-full object-cover rounded-lg"
                                     />
                                 ) : (
-                                    <div className="flex items-center justify-center h-full">
-                                        <Play className="w-16 h-16 text-white" />
-                                    </div>
+                                    null
                                 )}
                                 {course.videoUrl && (
                                     <div className="absolute inset-0 flex items-center justify-center">
-                                        <Button size="lg" className="rounded-full w-16 h-16">
-                                            <Play className="w-8 h-8" />
-                                        </Button>
+                                        <video className='w-full h-full object-cover rounded-lg' controls>
+                                            <source src={course.videoUrl} type="video/mp4" />
+                                            <source src={course.videoUrl} type="video/webm" />
+                                            <source src={course.videoUrl} type="video/ogg" />
+                                        </video>
                                     </div>
                                 )}
                             </div>
@@ -226,15 +227,25 @@ const CourseDetailPage: React.FC = () => {
                                     ))}
                                 </nav>
                             </div>
-
                             <div className="p-6">
                                 {activeTab === 'overview' && (
                                     <div>
                                         <h3 className="text-lg font-semibold mb-4">Course Description</h3>
                                         <div
                                             className="prose prose-gray max-w-none"
-                                            dangerouslySetInnerHTML={{ __html: course.content }}
+                                            dangerouslySetInnerHTML={{ __html: userHasEnrolled ? course.content : course.content.substring(0, 500) + (course.content.length > 500 ? '...' : '') }}
                                         />
+
+                                        {!userHasEnrolled && course.content.length > 500 && (
+                                            <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                                <p className="text-blue-800 text-sm font-medium mb-2">
+                                                    🔒 Full content available after enrollment
+                                                </p>
+                                                <p className="text-blue-600 text-sm">
+                                                    Enroll in this course to access the complete content, materials, and resources.
+                                                </p>
+                                            </div>
+                                        )}
 
                                         {course.attachments && course.attachments.length > 0 && (
                                             <div className="mt-6">
@@ -245,10 +256,17 @@ const CourseDetailPage: React.FC = () => {
                                                                 <FileText className="w-5 h-5 text-gray-400 mr-3" />
                                                                 <span className="text-sm">Attachment {index + 1}</span>
                                                             </div>
-                                                            <Button size="sm" variant="outline">
-                                                                <Download className="w-4 h-4 mr-1" />
-                                                                Download
-                                                            </Button>
+                                                            {userHasEnrolled ? (
+                                                                <Button size="sm" variant="outline">
+                                                                    <Download className="w-4 h-4 mr-1" />
+                                                                    Download
+                                                                </Button>
+                                                            ) : (
+                                                                <Button size="sm" variant="outline" disabled>
+                                                                    <Download className="w-4 h-4 mr-1" />
+                                                                    Enroll to Download
+                                                                </Button>
+                                                            )}
                                                         </div>
                                                     ))}
                                                 </div>
@@ -257,122 +275,120 @@ const CourseDetailPage: React.FC = () => {
                                     </div>
                                 )}
 
-                                {activeTab === 'curriculum' && (
+                                {activeTab === 'content' && userHasEnrolled && (
                                     <div>
-                                        <h3 className="text-lg font-semibold mb-4">What You'll Learn</h3>
-                                        <div className="space-y-3">
-                                            {/* This would be replaced with actual curriculum data */}
-                                            <div className="flex items-start">
-                                                <CheckCircle className="w-5 h-5 text-green-500 mt-1 mr-3 flex-shrink-0" />
-                                                <p>Understanding fundamental dental procedures</p>
+                                        <h3 className="text-lg font-semibold mb-4">Full Course Content</h3>
+                                        <div
+                                            className="prose prose-gray max-w-none"
+                                            dangerouslySetInnerHTML={{ __html: course.content }}
+                                        />
+
+                                        {course.videoUrl && (
+                                            <div className="mt-6">
+                                                <h4 className="text-md font-semibold mb-3">Course Video</h4>
+                                                <div className="relative h-64 bg-gray-100 rounded-lg overflow-hidden">
+                                                    <video
+                                                        controls
+                                                        className="w-full h-full object-cover"
+                                                        poster={course.thumbnailImage}
+                                                    >
+                                                        <source src={course.videoUrl} type="video/mp4" />
+                                                        <source src={course.videoUrl} type="video/webm" />
+                                                        <source src={course.videoUrl} type="video/ogg" />
+                                                    </video>
+                                                </div>
                                             </div>
-                                            <div className="flex items-start">
-                                                <CheckCircle className="w-5 h-5 text-green-500 mt-1 mr-3 flex-shrink-0" />
-                                                <p>Advanced techniques and best practices</p>
-                                            </div>
-                                            <div className="flex items-start">
-                                                <CheckCircle className="w-5 h-5 text-green-500 mt-1 mr-3 flex-shrink-0" />
-                                                <p>Patient care and communication skills</p>
-                                            </div>
-                                        </div>
+                                        )}
                                     </div>
                                 )}
+
+                                {activeTab === 'materials' && userHasEnrolled && (
+                                    <div>
+                                        <h3 className="text-lg font-semibold mb-4">Course Materials & Resources</h3>
+
+                                        {course.attachments && course.attachments.length > 0 ? (
+                                            <div className="space-y-4">
+                                                <p className="text-gray-600 mb-4">
+                                                    Download the following materials to enhance your learning experience:
+                                                </p>
+                                                <div className="space-y-3">
+                                                    {course.attachments.map((attachment: string, index: number) => (
+                                                        <div key={index} className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                                                            <div className="flex items-center">
+                                                                <FileText className="w-6 h-6 text-blue-500 mr-3" />
+                                                                <div>
+                                                                    <span className="text-sm font-medium">Course Material {index + 1}</span>
+                                                                    <p className="text-xs text-gray-500">PDF Document</p>
+                                                                </div>
+                                                            </div>
+                                                            <Button size="sm">
+                                                                <Download className="w-4 h-4 mr-1" />
+                                                                Download
+                                                            </Button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-8">
+                                                <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                                                <p className="text-gray-600">No additional materials available for this course.</p>
+                                            </div>
+                                        )}
+
+                                    </div>
+                                )}
+
+
 
                             </div>
                         </div>
                     </div>
 
                     {/* Sidebar */}
-                    <div>
-                        <Card className="sticky top-6">
-                            <CardHeader>
-                                <div className="text-center">
-                                    <div className="text-3xl font-bold text-gray-900 mb-2">
-                                        {formatPrice(course.price, course.currency, course.isFreeCourse)}
+                    {
+                        !userEnrollment && <div>
+                            <Card className="sticky top-6">
+                                <CardHeader>
+                                    <div className="text-center">
+                                        <div className="text-3xl font-bold text-gray-900 mb-2">
+                                            {formatPrice(course.price, course.currency, course.isFreeCourse)}
+                                        </div>
+                                        {!course.isFreeCourse && (
+                                            <p className="text-sm text-gray-500">One-time payment</p>
+                                        )}
                                     </div>
-                                    {!course.isFreeCourse && (
-                                        <p className="text-sm text-gray-500">One-time payment</p>
-                                    )}
-                                </div>
-                            </CardHeader>              <CardContent className="space-y-4">
-                                {userHasEnrolled ? (
-                                    <>
-                                        <div className="text-center">
-                                            <div className="text-lg font-semibold text-green-600 mb-2">
-                                                ✓ Enrolled
-                                            </div>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+
+                                    <Button
+                                        className="w-full"
+                                        size="lg"
+                                        onClick={handleEnroll}
+                                        disabled={enrollMutation.isPending}
+                                    >
+                                        {enrollMutation.isPending ? 'Enrolling...' : 'Enroll Now'}
+                                    </Button>
+
+                                    {course.maxEnrollments && (
+                                        <div className="border-t pt-4">
                                             <div className="text-sm text-gray-600">
-                                                Progress: {userEnrollment.progress}%
+                                                <strong>{course.maxEnrollments - course.enrollmentCount}</strong> spots left
                                             </div>
                                             <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
                                                 <div
-                                                    className="bg-green-500 h-2 rounded-full transition-all duration-300"
-                                                    style={{ width: `${userEnrollment.progress}%` }}
-                                                />
+                                                    className="bg-blue-600 h-2 rounded-full"
+                                                    style={{
+                                                        width: `${(course.enrollmentCount / course.maxEnrollments) * 100}%`
+                                                    }}
+                                                ></div>
                                             </div>
                                         </div>
-
-                                        <Button
-                                            className="w-full"
-                                            size="lg"
-                                            onClick={() => setActiveTab('progress')}
-                                        >
-                                            {userEnrollment.progress > 0 ? 'Continue Learning' : 'Start Course'}
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Button
-                                            className="w-full"
-                                            size="lg"
-                                            onClick={handleEnroll}
-                                            disabled={enrollMutation.isPending}
-                                        >
-                                            {enrollMutation.isPending ? 'Enrolling...' : 'Enroll Now'}
-                                        </Button>
-
-                                        <div className="text-center text-sm text-gray-500">
-                                            30-day money-back guarantee
-                                        </div>
-                                    </>
-                                )}
-
-                                <div className="border-t pt-4 space-y-3">
-                                    <h4 className="font-semibold">This course includes:</h4>
-                                    <div className="space-y-2 text-sm">
-                                        <div className="flex items-center">
-                                            <Clock className="w-4 h-4 mr-2 text-gray-400" />
-                                            {course.duration} hours of content
-                                        </div>
-                                        <div className="flex items-center">
-                                            <FileText className="w-4 h-4 mr-2 text-gray-400" />
-                                            {course.attachments?.length || 0} downloadable resources
-                                        </div>
-                                        <div className="flex items-center">
-                                            <CheckCircle className="w-4 h-4 mr-2 text-gray-400" />
-                                            Certificate of completion
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {course.maxEnrollments && (
-                                    <div className="border-t pt-4">
-                                        <div className="text-sm text-gray-600">
-                                            <strong>{course.maxEnrollments - course.enrollmentCount}</strong> spots left
-                                        </div>
-                                        <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                                            <div
-                                                className="bg-blue-600 h-2 rounded-full"
-                                                style={{
-                                                    width: `${(course.enrollmentCount / course.maxEnrollments) * 100}%`
-                                                }}
-                                            ></div>
-                                        </div>
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-                    </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </div>
+                    }
                 </div>
 
                 {/* Course Recommendations */}

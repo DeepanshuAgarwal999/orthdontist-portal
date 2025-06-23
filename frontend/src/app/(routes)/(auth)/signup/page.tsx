@@ -16,6 +16,7 @@ export interface SignupFormData {
     confirmPassword: string;
     licenseNumber?: string;
     location: string;
+    clinicName: string;
     agreeToTerms: boolean;
     agreeToMarketing: boolean;
 }

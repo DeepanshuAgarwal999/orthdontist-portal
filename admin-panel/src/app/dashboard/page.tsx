@@ -66,7 +66,7 @@ const DashboardPage: React.FC = () => {
                         <div className="ml-5 w-0 flex-1">
                             <dl>
                                 <dt className="text-sm font-medium text-blue-700 truncate">
-                                    Total Users
+                                    Total Dentists
                                 </dt>
                                 <dd className="text-lg font-bold text-blue-900">
                                     {totalUsers}
@@ -77,27 +77,6 @@ const DashboardPage: React.FC = () => {
                 </div>
             </div>
 
-                <div className="bg-gradient-to-br from-green-50 to-emerald-100 backdrop-blur-sm border border-green-200/30 overflow-hidden shadow-lg rounded-lg">
-                    <div className="p-5">
-                        <div className="flex items-center">
-                            <div className="flex-shrink-0">
-                                <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded-md flex items-center justify-center shadow-sm">
-                                    <UserCheck className="w-5 h-5 text-white" />
-                                </div>
-                            </div>
-                            <div className="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt className="text-sm font-medium text-green-700 truncate">
-                                        Total Dentists
-                                    </dt>
-                                    <dd className="text-lg font-bold text-green-900">
-                                        {totalDentists}
-                                    </dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <div className="bg-gradient-to-br from-purple-50 to-violet-100 backdrop-blur-sm border border-purple-200/30 overflow-hidden shadow-lg rounded-lg">
                     <div className="p-5">
@@ -113,7 +92,7 @@ const DashboardPage: React.FC = () => {
                                         Total Blogs
                                     </dt>
                                     <dd className="text-lg font-bold text-purple-900">
-                                        {stats?.totalBlogs || 'Loading...'}
+                                        {stats?.totalBlogs || 0}
                                     </dd>
                                 </dl>
                             </div>
@@ -135,7 +114,7 @@ const DashboardPage: React.FC = () => {
                                         Published Blogs
                                     </dt>
                                     <dd className="text-lg font-bold text-indigo-900">
-                                        {stats?.publishedBlogs || 'Loading...'}
+                                        {stats?.publishedBlogs || 0}
                                     </dd>
                                 </dl>
                             </div>
@@ -157,7 +136,7 @@ const DashboardPage: React.FC = () => {
                                         Total Courses
                                     </dt>
                                     <dd className="text-lg font-bold text-orange-900">
-                                        {courseStatsData?.totalCourses || 'Loading...'}
+                                        {courseStatsData?.totalCourses || 0}
                                     </dd>
                                 </dl>
                             </div>
@@ -179,7 +158,7 @@ const DashboardPage: React.FC = () => {
                                         Total Ebooks
                                     </dt>
                                     <dd className="text-lg font-bold text-teal-900">
-                                        {ebookStatsData?.totalEbooks || 'Loading...'}
+                                        {ebookStatsData?.totalEbooks || 0}
                                     </dd>
                                 </dl>
                             </div>
@@ -239,13 +218,7 @@ const DashboardPage: React.FC = () => {
                             Manage Ebooks
                         </Link>
 
-                        <Link
-                            href="/dashboard/dentists"
-                            className="flex items-center justify-center px-4 py-3 border border-green-200 rounded-lg shadow-sm bg-gradient-to-r from-green-50 to-emerald-50 text-sm font-medium text-green-700 hover:from-green-100 hover:to-emerald-100 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-200"
-                        >
-                            <UserCheck className="w-5 h-5 mr-2 text-green-600" />
-                            Manage Dentists
-                        </Link>
+                       
                     </div>
                 </div>
             </div>

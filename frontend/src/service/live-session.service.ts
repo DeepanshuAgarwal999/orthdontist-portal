@@ -6,7 +6,6 @@ export interface LiveSession {
   description: string;
   slug: string;
   topic: string;
-  category: string;
   tags: string[];
   scheduledAt: string;
   duration: number; // in minutes
@@ -41,7 +40,6 @@ export interface LiveSession {
 export interface LiveSessionQuery {
   search?: string;
   status?: string;
-  category?: string;
   createdById?: string;
   page?: string;
   limit?: string;

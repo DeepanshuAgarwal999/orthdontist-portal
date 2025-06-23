@@ -31,6 +31,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSubmit, loading = false }) =>
         confirmPassword: '',
         licenseNumber: '',
         location: '',
+        clinicName:"",
         agreeToTerms: false,
         agreeToMarketing: false,
     });
@@ -254,6 +255,14 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSubmit, loading = false }) =>
 
                             <>
                                 <Input
+                                    label="Clinic Name *"
+                                    type="text"
+                                    placeholder="Your clinic name"
+                                    value={formData.clinicName}
+                                    onChange={handleInputChange('clinicName')}
+                                    icon={<MapPinIcon size={20} />}
+                                />
+                                <Input
                                     label="License Number (optional)"
                                     type="text"
                                     placeholder="Your dental license number"
@@ -271,6 +280,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSubmit, loading = false }) =>
                                     onChange={handleInputChange('location')}
                                     icon={<MapPinIcon size={20} />}
                                 />
+
                             </>
 
 

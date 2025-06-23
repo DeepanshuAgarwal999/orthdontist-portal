@@ -1,13 +1,10 @@
 import {
   IsEmail,
-  IsEnum,
   IsNotEmpty,
   IsString,
   MinLength,
   IsOptional,
-  IsPhoneNumber,
   IsBoolean,
-  isString,
 } from 'class-validator';
 
 export class SignupDto {
@@ -36,9 +33,11 @@ export class SignupDto {
   @IsString()
   licenseNumber?: string;
 
+  @IsOptional()
   @IsString()
   location?: string;
 
+  @IsOptional()
   @IsString()
   clinicName: string;
 

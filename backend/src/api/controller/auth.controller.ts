@@ -18,7 +18,7 @@ import {
   ResetPasswordDto,
 } from '../dto/auth.dto';
 import { CookieHelper } from '../../helpers/cookies.helper';
-import { AuthGuard } from '../../guards/auth.guard';
+import { AuthGuard, UserRole } from '../../guards/auth.guard';
 import { MapService } from '../services/map.service';
 
 @Controller('auth')
@@ -34,7 +34,12 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const result = await this.authService.signup(signupDto);
-    this.mapService.updateUserLocationOnMap(result.user.id, signupDto.location);
+    if (result.user.role === UserRole.USER) {
+      this.mapService.updateUserLocationOnMap(
+        result.user.id,
+        signupDto.location,
+      );
+    }
     return res.status(HttpStatus.CREATED).json(result);
   }
 

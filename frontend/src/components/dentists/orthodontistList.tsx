@@ -1,86 +1,37 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Search, MapPin, Phone, Clock, Calendar, Navigation, ZoomIn, Map, Satellite, X, RotateCcw } from 'lucide-react'
+import { Search, MapPin, Phone, Clock, Calendar, Navigation, ZoomIn, Map, Satellite, X, RotateCcw, PhoneCall } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { useQuery } from '@tanstack/react-query'
 import { OrthodontistService } from '@/service/orthodontist.service'
+import axiosInstance from '@/config/axios.instance'
+import Link from 'next/link'
 
 // Dynamically import map components to avoid SSR issues
 const MapContainer = dynamic(() => import('react-leaflet').then((mod) => mod.MapContainer), { ssr: false })
 const TileLayer = dynamic(() => import('react-leaflet').then((mod) => mod.TileLayer), { ssr: false })
 const Marker = dynamic(() => import('react-leaflet').then((mod) => mod.Marker), { ssr: false })
 
-const orthodontists: Orthodontist[] = [
-    {
-        id: '1',
-        name: 'Dr.Shah Dental Clinic',
-        address: 'Shop no.16, Indira Appts, CHS, Govandi Station Rd, opp. USV Ltd, B.S. D. Marg',
-        city: 'Mumbai',
-        state: 'Maharashtra',
-        zipCode: '400088',
-        phone: '9769001522',
-        hours: '10:00 AM - 07:00 PM',
-        days: 'Monday, Tues, Wed, Thur, Fri, Sat',
-        lat: 19.0544,
-        lng: 72.9131,
-        rating: 4.5,
-        reviews: 125
-    },
-    {
-        id: '2',
-        name: 'Dr.Suhas Pagay Dental Clinic',
-        address: 'Plot No: 321 B, Madhav Bhavan, Opp. Kirtikumar, Deodhar Marg, Matunga East',
-        city: 'Mumbai',
-        state: 'Maharashtra',
-        zipCode: '400019',
-        phone: '9820675158',
-        hours: '09:00 AM - 08:00 PM',
-        days: 'Monday to Saturday',
-        lat: 19.0330,
-        lng: 72.8570,
-        rating: 4.7,
-        reviews: 89
-    },
-    {
-        id: '3',
-        name: 'Elite Orthodontic Center',
-        address: 'A-204, Shreeji Plaza, Near Metro Station, Andheri West',
-        city: 'Mumbai',
-        state: 'Maharashtra',
-        zipCode: '400058',
-        phone: '9876543210',
-        hours: '10:00 AM - 06:00 PM',
-        days: 'Monday to Friday',
-        lat: 19.1367,
-        lng: 72.8269,
-        rating: 4.8,
-        reviews: 210
-    }
-]
+
 interface Orthodontist {
     id: string
-    name: string
-    address: string
-    city: string
-    state: string
-    zipCode: string
+    firstName: string
+    lastName: string
+    location: string
+    latitude: string,
+    longitude: string,
+    clinicName: string
     phone: string
-    hours: string
-    days: string
-    lat: number
-    lng: number
-    rating?: number
-    reviews?: number
 }
 
 const OrthodontistList = () => {
     const [selectedClinic, setSelectedClinic] = useState<Orthodontist | null>(null)
-    const [searchLocation, setSearchLocation] = useState('')
     const [mapView, setMapView] = useState<'map' | 'satellite'>('map')
     const [mapCenter, setMapCenter] = useState<[number, number]>([19.0760, 72.8777]) // Mumbai center
     const [mapZoom, setMapZoom] = useState(12)
     const mapRef = useRef<any>(null)
+    const [searchQuery, setSearchQuery] = useState('')
     const clinicListRef = useRef<HTMLDivElement>(null)
 
 
@@ -94,18 +45,43 @@ const OrthodontistList = () => {
         }
     }, [])
 
+
+
     // Mock data - replace with actual data
 
     const { data, isLoading } = useQuery({
         queryKey: ['orthodontists'],
-        queryFn: OrthodontistService.getOrthodontists,
+        queryFn: async () => {
+            const response = await axiosInstance.get<{ users: Orthodontist[] }>('/user/coordinates')
+            return response.data
+        }
     })
+
+    const orthodontists = data?.users || []
+
+    const filteredOrthodontists = orthodontists.filter((clinic) => {
+        if (!searchQuery.trim()) return true
+
+        const query = searchQuery.toLowerCase()
+        const clinicName = clinic.clinicName.toLowerCase()
+        const location = clinic.location.toLowerCase()
+        const doctorName = `${clinic.firstName} ${clinic.lastName}`.toLowerCase()
+
+        return clinicName.includes(query) ||
+            location.includes(query) ||
+            doctorName.includes(query)
+    })
+    
+    useEffect(() => {
+        setSelectedClinic(null)
+        handleResetMap()
+    }, [searchQuery])
 
     const handleClinicSelect = (clinic: Orthodontist) => {
         setSelectedClinic(clinic)
 
         // Center map on selected clinic
-        const newCenter: [number, number] = [clinic.lat, clinic.lng]
+        const newCenter: [number, number] = [parseFloat(clinic.latitude), parseFloat(clinic.longitude)]
         const newZoom = 15
         setMapCenter(newCenter)
         setMapZoom(newZoom)
@@ -178,7 +154,15 @@ const OrthodontistList = () => {
         }
         return null
     }
-
+    if (isLoading) {
+        return (<div className="flex items-center justify-center min-h-screen bg-gray-50">
+            <div className="text-center">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="mt-4 text-lg text-gray-600">Loading...</p>
+                <p className="mt-2 text-sm text-gray-500">Getting best dental clinics for you...</p>
+            </div>
+        </div>)
+    }
     return (
         <div className="min-h-screen bg-neutral-50">
             {/* Search Header */}
@@ -190,8 +174,8 @@ const OrthodontistList = () => {
                             <input
                                 type="text"
                                 placeholder="Enter a Location"
-                                value={searchLocation}
-                                onChange={(e) => setSearchLocation(e.target.value)}
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full pl-10 pr-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
                             />
                         </div>
@@ -206,57 +190,35 @@ const OrthodontistList = () => {
                 {/* Left Sidebar - Clinic List */}
                 <div className="w-1/3 bg-white border-r border-neutral-200 overflow-y-auto">
                     {/* Results Header */}
-                    <div className="bg-primary-600 text-white px-4 py-3">
-                        <h2 className="font-semibold">Orthodontist Clinics Near You: {orthodontists.length}</h2>
+                    <div className="bg-primary-600  px-4 py-3">
+                        <h2 className="font-semibold">Orthodontist Clinics Near You: {filteredOrthodontists.length}</h2>
                     </div>
 
                     {/* Clinic Cards */}
                     <div className="divide-y divide-neutral-200">
-                        {orthodontists.map((clinic) => (
+                        {filteredOrthodontists?.map((clinic) => (
                             <div
                                 key={clinic.id}
                                 data-clinic-id={clinic.id}
-                                className={`p-4 cursor-pointer hover:bg-neutral-50 transition-colors ${selectedClinic?.id === clinic.id ? 'bg-primary-50 border-l-4 border-l-primary-600' : ''
+                                className={`p-4 cursor-pointer hover:bg-gray-100 bg-neutral-50 transition-colors ${selectedClinic?.id === clinic.id ? 'bg-primary-50 border-l-4 border-l-primary-600' : ''
                                     }`}
                                 onClick={() => handleClinicSelect(clinic)}
                             >
-                                <h3 className="font-semibold text-neutral-900 mb-2">{clinic.name}</h3>
+                                <h3 className="font-semibold text-neutral-900 mb-2">{clinic.clinicName}</h3>
 
-                                <div className="space-y-2 text-sm text-neutral-600">
+                                <div className="space-y-2 text-sm text-neutral-600 pl-2">
                                     <div className="flex items-start space-x-2">
                                         <MapPin className="text-neutral-400 mt-0.5 flex-shrink-0" size={16} />
-                                        <span>{clinic.address}, {clinic.city}, {clinic.state} {clinic.zipCode}</span>
+                                        <span>{clinic.location},</span>
+                                    </div>
+                                    <div className='flex items-center gap-2'>
+                                        <PhoneCall className="size-4" />
+                                        <Link href={`tel:${clinic.phone}`} className="text-primary-600 hover:underline cursor-pointer">{clinic.phone}</Link>
                                     </div>
 
-                                    <div className="flex items-center space-x-2">
-                                        <Phone className="text-neutral-400 flex-shrink-0" size={16} />
-                                        <span className="text-primary-600 hover:underline cursor-pointer">{clinic.phone}</span>
-                                    </div>
-
-                                    <div className="flex items-center space-x-2">
-                                        <Clock className="text-neutral-400 flex-shrink-0" size={16} />
-                                        <span>{clinic.hours}</span>
-                                    </div>
-
-                                    <div className="flex items-center space-x-2">
-                                        <Calendar className="text-neutral-400 flex-shrink-0" size={16} />
-                                        <span>{clinic.days}</span>
-                                    </div>
-
-                                    {clinic.rating && (
-                                        <div className="flex items-center space-x-2">
-                                            <div className="flex items-center">
-                                                <span className="text-accent-500">★</span>
-                                                <span className="ml-1 font-medium text-neutral-800">{clinic.rating}</span>
-                                                <span className="ml-1 text-neutral-600">({clinic.reviews} reviews)</span>
-                                            </div>
-                                        </div>
-                                    )}
                                 </div>
 
-                                <button className="mt-3 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                                    Directions
-                                </button>
+
                             </div>
                         ))}
                     </div>
@@ -318,10 +280,10 @@ const OrthodontistList = () => {
                             />
 
                             {/* Clinic Markers */}
-                            {orthodontists.map((clinic) => (
+                            {filteredOrthodontists.map((clinic) => (
                                 <Marker
                                     key={clinic.id}
-                                    position={[clinic.lat, clinic.lng]}
+                                    position={[parseFloat(clinic.latitude), parseFloat(clinic.longitude)]}
                                     icon={createRedMarkerIcon(selectedClinic?.id === clinic.id)}
                                     eventHandlers={{
                                         click: () => handleClinicSelect(clinic)
@@ -352,25 +314,12 @@ const OrthodontistList = () => {
                         <div className="absolute top-20 left-6 bg-white rounded-lg shadow-xl border border-neutral-200 p-4 max-w-sm z-[1000]">
                             <div className="flex items-start justify-between">
                                 <div className="flex-1">
-                                    <h3 className="font-semibold text-neutral-900 mb-1">{selectedClinic.name}</h3>
+                                    <h3 className="font-semibold text-neutral-900 mb-1">{selectedClinic.clinicName}</h3>
                                     <p className="text-sm text-neutral-600 mb-2">
-                                        {selectedClinic.address}, {selectedClinic.city}, {selectedClinic.state} {selectedClinic.zipCode}
+                                        {selectedClinic.location}
                                     </p>
 
-                                    <div className="space-y-1 text-sm text-neutral-600 mb-3">
-                                        <div className="flex items-center space-x-2">
-                                            <Phone size={14} />
-                                            <span className="text-primary-600">{selectedClinic.phone}</span>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <Clock size={14} />
-                                            <span>{selectedClinic.hours}</span>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <Calendar size={14} />
-                                            <span>{selectedClinic.days}</span>
-                                        </div>
-                                    </div>
+
 
                                     <div className="flex space-x-2">
                                         <button className="bg-primary-600 hover:bg-primary-700 text-white px-3 py-1.5 rounded text-sm font-medium transition-colors">
@@ -378,7 +327,7 @@ const OrthodontistList = () => {
                                         </button>
                                         <button
                                             onClick={() => {
-                                                const newCenter: [number, number] = [selectedClinic.lat, selectedClinic.lng]
+                                                const newCenter: [number, number] = [parseFloat(selectedClinic.latitude), parseFloat(selectedClinic.longitude)]
                                                 const newZoom = 18
                                                 setMapCenter(newCenter)
                                                 setMapZoom(newZoom)

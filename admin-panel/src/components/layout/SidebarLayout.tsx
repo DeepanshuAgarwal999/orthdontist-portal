@@ -13,7 +13,8 @@ import {
     Menu,
     X,
     GraduationCap,
-    BookOpen
+    BookOpen,
+    Video
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AuthService } from '@/services/auth.service';
@@ -44,10 +45,11 @@ const navigationItems = [
         icon: BookOpen,
     },
     {
-        name: 'Settings',
-        href: '/dashboard/settings',
-        icon: Settings,
+        name: 'Live Sessions',
+        href: '/dashboard/live-sessions',
+        icon: Video,
     },
+
 ];
 
 const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {

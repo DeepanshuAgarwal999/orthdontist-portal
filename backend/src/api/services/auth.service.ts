@@ -37,12 +37,6 @@ export class AuthService {
       clinicName,
     } = signupDto;
 
-    let role = UserRole.USER;
-    const adminEmails = [process.env.ADMIN_EMAIL_1];
-
-    if (adminEmails.includes(email)) {
-      UserRole.ADMIN;
-    }
     // Check if user already exists
     const existingUser = await this.prisma.user.findUnique({
       where: { email },
@@ -52,6 +46,18 @@ export class AuthService {
       throw new ConflictException('Email already in use');
     }
 
+    let role = UserRole.USER;
+    const adminEmails = [process.env.ADMIN_EMAIL_1];
+
+    if (adminEmails.includes(email)) {
+      role = UserRole.ADMIN;
+    } else {
+      if (!clinicName || !location) {
+        throw new BadRequestException(
+          'Please provide clinic name and location',
+        );
+      }
+    }
     // Hash the password
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -61,6 +67,7 @@ export class AuthService {
     const verificationTokenExpiry = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours
 
     // Create new user
+    const isAdmin = UserRole.ADMIN === role;
     const user = await this.prisma.user.create({
       data: {
         email,
@@ -72,32 +79,35 @@ export class AuthService {
         clinicName,
         location,
 
-        isEmailVerified: false,
-        emailVerificationToken: verificationToken,
-        emailVerificationExpiry: verificationTokenExpiry,
+        isEmailVerified: isAdmin,
+        emailVerificationToken: isAdmin ? null : verificationToken,
+        emailVerificationExpiry: isAdmin ? null : verificationTokenExpiry,
       },
     });
 
     // Send verification email
     const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email?token=${verificationToken}`;
 
-    await this.emailService.sendVerificationEmail({
-      firstName: user.firstName,
-      email: user.email,
-      role: user.role,
-      registrationDate: new Date().toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      }),
-      verificationUrl,
-      baseUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
-    });
+    if (!isAdmin) {
+      await this.emailService.sendVerificationEmail({
+        firstName: user.firstName,
+        email: user.email,
+        role: user.role,
+        registrationDate: new Date().toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }),
+        verificationUrl,
+        baseUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
+      });
+    }
 
     return {
       success: true,
-      message:
-        'Account created successfully. Please check your email to verify your account.',
+      message: isAdmin
+        ? 'Account created successfully'
+        : 'Account created successfully. Please check your email to verify your account.',
       user: {
         id: user.id,
         firstName: user.firstName,
@@ -105,6 +115,7 @@ export class AuthService {
         email: user.email,
         isEmailVerified: user.isEmailVerified,
         location: user.location,
+        role: user.role,
       },
     };
   }

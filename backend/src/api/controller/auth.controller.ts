@@ -19,10 +19,14 @@ import {
 } from '../dto/auth.dto';
 import { CookieHelper } from '../../helpers/cookies.helper';
 import { AuthGuard } from '../../guards/auth.guard';
+import { MapService } from '../services/map.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly mapService: MapService,
+  ) {}
 
   @Post('signup')
   async signup(
@@ -30,6 +34,7 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const result = await this.authService.signup(signupDto);
+    this.mapService.updateUserLocationOnMap(result.user.id, signupDto.location);
     return res.status(HttpStatus.CREATED).json(result);
   }
 

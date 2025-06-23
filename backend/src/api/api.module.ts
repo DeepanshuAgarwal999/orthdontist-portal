@@ -13,6 +13,8 @@ import { LiveSessionService } from './services/livesession.service';
 import { EmailService } from './services/email.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { ImageKitService } from './services/imagekit.service';
+import { UserController } from './controller/user.controller';
+import { MapService } from './services/map.service';
 
 @Module({
   imports: [PrismaModule],
@@ -23,6 +25,7 @@ import { ImageKitService } from './services/imagekit.service';
     EbookController,
     LiveSessionController,
     ImageKitController,
+    UserController
   ],
   providers: [
     AuthService,
@@ -32,6 +35,7 @@ import { ImageKitService } from './services/imagekit.service';
     LiveSessionService,
     EmailService,
     ImageKitService,
+    MapService
   ],
   exports: [
     AuthService,
@@ -41,6 +45,7 @@ import { ImageKitService } from './services/imagekit.service';
     LiveSessionService,
     EmailService,
     ImageKitService,
+    MapService
   ],
 })
 export class ApiModule {}

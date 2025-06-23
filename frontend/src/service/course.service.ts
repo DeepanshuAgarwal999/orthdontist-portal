@@ -105,7 +105,7 @@ export class CourseService {
     if (query?.limit) params.append("limit", query.limit.toString());
     if (query?.status) params.append("status", query.status);
 
-    const response = await axiosInstance.get<{ data: CourseEnrollment[] }>(`/courses/enrollment/my-enrollments`);
+    const response = await axiosInstance.get<{ data: CourseEnrollment[]; pagination: any }>(`/courses/enrollment/my-enrollments`);
     return response.data;
   }
 

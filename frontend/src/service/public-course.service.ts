@@ -98,13 +98,11 @@ export class PublicCourseService {
     return response.data;
   }
 
-
   // Enroll in course (requires authentication)
   static async enrollInCourse(courseId: string) {
     const response = await axiosInstance.post(`/courses/${courseId}/enroll`);
     return response.data;
   }
-
   // Get my enrollments (requires authentication)
   static async getMyEnrollments(query?: CourseQuery) {
     const params = new URLSearchParams();
@@ -112,7 +110,7 @@ export class PublicCourseService {
     if (query?.limit) params.append("limit", query.limit.toString());
     if (query?.status) params.append("status", query.status);
 
-    const response = await axiosInstance.get(`/courses/my-enrollments?${params.toString()}`);
+    const response = await axiosInstance.get(`/courses/enrollment/my-enrollments?${params.toString()}`);
     return response.data;
   }
 

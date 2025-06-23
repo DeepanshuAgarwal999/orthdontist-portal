@@ -22,6 +22,11 @@ model User {
   lastName                 String
   phone                    String?
   role                     String    // Can be 'ADMIN', 'DENTIST', or 'PATIENT'
+  location                 String
+  clinicName               String
+  zipCode                  String?
+  latitude                 Float?
+  longitude                Float?
   
   // Email verification
   isEmailVerified          Boolean   @default(false)
@@ -197,7 +202,6 @@ model LiveSession {
   title           String
   description     String 
   slug            String        @unique // URL-friendly version of title
-  
   // Session Details
   topic           String        // Main topic or subject
   tags            String[]      // Array of tags for better organization

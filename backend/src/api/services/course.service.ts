@@ -524,9 +524,44 @@ export class CourseService {
     }
 
     const total = await this.prisma.courseEnrollment.count({ where });
-
     const enrollments = await this.prisma.courseEnrollment.findMany({
       where,
+      include: {
+        course: {
+          select: {
+            id: true,
+            title: true,
+            slug: true,
+            shortDescription: true,
+            description: true,
+            content: true,
+            tags: true,
+            thumbnailImage: true,
+            videoUrl: true,
+            videoFile: true,
+            price: true,
+            currency: true,
+            isFreeCourse: true,
+            status: true,
+            maxEnrollments: true,
+            enrollmentCount: true,
+            viewCount: true,
+            rating: true,
+            reviewCount: true,
+            publishedAt: true,
+            createdAt: true,
+            updatedAt: true,
+            createdBy: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+          },
+        },
+      },
       orderBy: { enrolledAt: 'desc' },
       skip,
       take: limitNum,

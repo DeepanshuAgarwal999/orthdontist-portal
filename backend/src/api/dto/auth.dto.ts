@@ -7,8 +7,8 @@ import {
   IsOptional,
   IsPhoneNumber,
   IsBoolean,
+  isString,
 } from 'class-validator';
-import { UserRole } from '../../guards/auth.guard';
 
 export class SignupDto {
   @IsNotEmpty()
@@ -32,17 +32,15 @@ export class SignupDto {
   @MinLength(8)
   password: string;
 
-  @IsNotEmpty()
-  @IsEnum(UserRole)
-  role: UserRole;
-
   @IsOptional()
   @IsString()
   licenseNumber?: string;
 
-  @IsOptional()
   @IsString()
   location?: string;
+
+  @IsString()
+  clinicName: string;
 
   @IsOptional()
   @IsBoolean()

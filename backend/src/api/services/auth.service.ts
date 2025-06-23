@@ -27,9 +27,22 @@ export class AuthService {
   ) {}
 
   async signup(signupDto: SignupDto) {
-    const { email, password, firstName, lastName, role, phone, location } =
-      signupDto;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      phone,
+      location,
+      clinicName,
+    } = signupDto;
 
+    let role = UserRole.USER;
+    const adminEmails = [process.env.ADMIN_EMAIL_1];
+
+    if (adminEmails.includes(email)) {
+      UserRole.ADMIN;
+    }
     // Check if user already exists
     const existingUser = await this.prisma.user.findUnique({
       where: { email },
@@ -56,6 +69,9 @@ export class AuthService {
         lastName,
         role,
         phone,
+        clinicName,
+        location,
+
         isEmailVerified: false,
         emailVerificationToken: verificationToken,
         emailVerificationExpiry: verificationTokenExpiry,
@@ -88,6 +104,7 @@ export class AuthService {
         lastName: user.lastName,
         email: user.email,
         isEmailVerified: user.isEmailVerified,
+        location: user.location,
       },
     };
   }
@@ -119,7 +136,12 @@ export class AuthService {
     }
 
     // Generate token
-    const token = this.generateToken(user.id, user.role as UserRole);
+    const token = this.generateToken(
+      user.id,
+      user.role as UserRole,
+      user.firstName,
+      user.lastName,
+    );
 
     return {
       success: true,
@@ -134,8 +156,13 @@ export class AuthService {
       token,
     };
   }
-  generateToken(userId: string, role: UserRole): string {
-    const payload = { id: userId, role };
+  generateToken(
+    userId: string,
+    role: UserRole,
+    firstName: string,
+    lastName: string,
+  ): string {
+    const payload = { id: userId, role, firstName, lastName };
     return this.jwtService.sign(payload);
   }
 

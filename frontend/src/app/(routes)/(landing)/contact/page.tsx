@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card, CardContent } from '@/components/ui/Card';
 import { MailIcon, UserIcon, MessageCircleIcon, PhoneIcon, MapPinIcon, CalendarIcon } from '@/components/ui/Icons';
+import axiosInstance from '@/config/axios.instance';
 
 interface ContactFormData {
     name: string;
@@ -68,7 +69,7 @@ const ContactUs = () => {
 
         try {
             // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await axiosInstance.post('/user/contact', formData);
             setSuccess(true);
             setFormData({ name: '', email: '', subject: '', message: '' });
         } catch (error) {

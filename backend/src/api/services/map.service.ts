@@ -1,4 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { UserRole } from 'src/guards/auth.guard';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -83,6 +84,7 @@ export class MapService {
         where: {
           latitude: { not: null },
           longitude: { not: null },
+          NOT: { role: UserRole.ADMIN },
         },
         select: {
           id: true,
@@ -93,7 +95,7 @@ export class MapService {
           location: true,
           latitude: true,
           longitude: true,
-          phone:true
+          phone: true,
         },
       });
 

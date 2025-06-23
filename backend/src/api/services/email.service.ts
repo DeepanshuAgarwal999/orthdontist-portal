@@ -136,7 +136,7 @@ export class EmailService {
     return `
 Hello ${data.firstName}!
 
-Thank you for joining DentistPortal, the trusted network of dental professionals.
+Thank you for joining Aligner360, the trusted network of dental professionals.
 
 To complete your registration and ensure the security of your account, please verify your email address by clicking the link below:
 
@@ -174,7 +174,7 @@ Professional Dental Network | Trusted by 10,000+ Professionals
   }): Promise<boolean> {
     // You can create another template for welcome emails
     const html = `
-      <h1>Welcome to DentistPortal, ${data.firstName}!</h1>
+      <h1>Welcome to Aligner360, ${data.firstName}!</h1>
       <p>Your account has been successfully verified and is now active.</p>
       <p>You can now log in to your ${data.role.toLowerCase()} account:</p>
       <a href="${data.loginUrl}" style="background: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">

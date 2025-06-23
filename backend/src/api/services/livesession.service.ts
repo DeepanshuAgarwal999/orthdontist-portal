@@ -73,7 +73,6 @@ export class LiveSessionService {
         title,
         slug: sessionSlug,
         scheduledAt: scheduleDate,
-        category: rest.category || 'General Dentistry', // Provide default category
         ...rest,
         createdBy: {
           connect: {
@@ -102,7 +101,6 @@ export class LiveSessionService {
     const {
       search,
       status,
-      category,
       createdById,
       page = '1',
       limit = '10',
@@ -127,10 +125,6 @@ export class LiveSessionService {
 
     if (status) {
       where.status = status;
-    }
-
-    if (category) {
-      where.category = { contains: category, mode: 'insensitive' };
     }
 
     if (createdById) {

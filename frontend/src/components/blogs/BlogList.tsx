@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import { BlogsResponse, BlogQueryParams } from '@/types/blog';
+import { BlogQueryParams } from '@/types/blog';
 import { BlogsService } from '@/service/blog.service';
 import BlogCard from './BlogCard';
 import BlogSkeleton from './BlogSkeleton';
@@ -29,6 +29,7 @@ const BlogList: React.FC<BlogListProps> = ({
         sortBy: 'createdAt',
         sortOrder: 'desc'
     });
+
     const { data: blogsData, isLoading, error } = useQuery({
         queryKey: ['blogs', JSON.stringify(filters)],
         queryFn: () => BlogsService.getAllBlogs(filters),

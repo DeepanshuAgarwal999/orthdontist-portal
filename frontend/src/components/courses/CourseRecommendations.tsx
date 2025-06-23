@@ -20,10 +20,7 @@ interface Course {
     id: string;
     title: string;
     slug: string;
-    shortDescription: string;
-    duration: number;
-    level: string;
-    category: string;
+    shortDescription?: string;
     tags: string[];
     thumbnailImage?: string;
     price: number;
@@ -45,7 +42,6 @@ export const CourseRecommendations: React.FC<CourseRecommendationsProps> = ({
     currentCourseId,
     currentCourseCategory,
     currentCourseTags,
-    userLevel = 'BEGINNER'
 }) => {
     const router = useRouter();
 
@@ -53,8 +49,6 @@ export const CourseRecommendations: React.FC<CourseRecommendationsProps> = ({
     const { data: recommendedCoursesData, isLoading } = useQuery({
         queryKey: ['course-recommendations', currentCourseId],
         queryFn: async () => {
-            // In a real implementation, this would call a recommendation API
-            // For now, we'll fetch courses in the same category
             const coursesResponse = await CourseService.getCourses({
                 page: 1,
                 limit: 6,
@@ -83,18 +77,9 @@ export const CourseRecommendations: React.FC<CourseRecommendationsProps> = ({
         }).format(price);
     };
 
-    const getLevelColor = (level: string) => {
-        switch (level) {
-            case 'BEGINNER': return 'bg-green-100 text-green-800';
-            case 'INTERMEDIATE': return 'bg-blue-100 text-blue-800';
-            case 'ADVANCED': return 'bg-orange-100 text-orange-800';
-            case 'EXPERT': return 'bg-red-100 text-red-800';
-            default: return 'bg-gray-100 text-gray-800';
-        }
-    };
 
     const handleCourseClick = (slug: string) => {
-        router.push(`/dentists/courses/${slug}`);
+        router.push(`/courses/${slug}`);
     };
 
     if (isLoading) {
@@ -144,7 +129,7 @@ export const CourseRecommendations: React.FC<CourseRecommendationsProps> = ({
                 <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => router.push('/dentists/courses')}
+                    onClick={() => router.push('/courses')}
                 >
                     View All Courses
                     <ArrowRight className="w-4 h-4 ml-2" />
@@ -172,12 +157,6 @@ export const CourseRecommendations: React.FC<CourseRecommendationsProps> = ({
                                 </div>
                             )}
 
-                            {/* Level Badge */}
-                            <div className="absolute top-2 left-2">
-                                <Badge className={getLevelColor(course.level)}>
-                                    {course.level.charAt(0) + course.level.slice(1).toLowerCase()}
-                                </Badge>
-                            </div>
 
                             {/* Price Badge */}
                             <div className="absolute top-2 right-2">
@@ -198,10 +177,6 @@ export const CourseRecommendations: React.FC<CourseRecommendationsProps> = ({
 
                             {/* Course Stats */}
                             <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
-                                <div className="flex items-center">
-                                    <Clock className="w-4 h-4 mr-1" />
-                                    {course.duration}h
-                                </div>
                                 <div className="flex items-center">
                                     <Users className="w-4 h-4 mr-1" />
                                     {course.enrollmentCount}

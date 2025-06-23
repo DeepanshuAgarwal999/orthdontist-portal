@@ -3,6 +3,7 @@ import {
   NotFoundException,
   BadRequestException,
   ForbiddenException,
+  ConflictException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
@@ -454,7 +455,7 @@ export class CourseService {
     });
 
     if (existingEnrollment) {
-      throw new BadRequestException('You are already enrolled in this course');
+      throw new ConflictException('You are already enrolled in this course');
     }
 
     // Check enrollment limit
@@ -526,26 +527,6 @@ export class CourseService {
 
     const enrollments = await this.prisma.courseEnrollment.findMany({
       where,
-      include: {
-        course: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
-            shortDescription: true,
-            thumbnailImage: true,
-            tags: true,
-            price: true,
-            isFreeCourse: true,
-            createdBy: {
-              select: {
-                firstName: true,
-                lastName: true,
-              },
-            },
-          },
-        },
-      },
       orderBy: { enrolledAt: 'desc' },
       skip,
       take: limitNum,

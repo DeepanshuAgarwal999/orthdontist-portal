@@ -11,10 +11,11 @@ export class CookieHelper {
     token: string,
     expiresInSeconds: number = 86400, // 24 hours by default
   ): void {
+    const isProduction = process.env.NODE_ENV === 'production';
     response.cookie(this.ACCESS_TOKEN_COOKIE, token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // HTTPS in production
-      sameSite: 'strict',
+      secure: isProduction, // HTTPS in production
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: expiresInSeconds * 1000, // Convert to milliseconds
       path: '/',
     });
@@ -24,10 +25,11 @@ export class CookieHelper {
    * Clear access token cookie
    */
   static clearAccessTokenCookie(response: Response): void {
+    const isProduction = process.env.NODE_ENV === 'production';
     response.clearCookie(this.ACCESS_TOKEN_COOKIE, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       path: '/',
     });
   }

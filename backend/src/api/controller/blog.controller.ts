@@ -177,8 +177,11 @@ export class BlogController {
    */
   @Get('public')
   async getPublishedBlogs(@Query() query: BlogQueryDto, @Res() res: Response) {
-    const result = await this.blogService.getPublishedBlogs(query);
-
+    const isForDentist = query.isForDentist || false;
+    const result = await this.blogService.getPublishedBlogs({
+      ...query,
+      isForDentist,
+    });
     return res.status(HttpStatus.OK).json({
       success: true,
       message: 'Published blogs retrieved successfully',
@@ -280,7 +283,7 @@ export class BlogController {
     } catch (error) {
       // User is not authenticated, continue as public user
     }
-    const blog = await this.blogService.getBlogById(id,userRole);
+    const blog = await this.blogService.getBlogById(id, userRole);
 
     return res.status(HttpStatus.OK).json({
       success: true,

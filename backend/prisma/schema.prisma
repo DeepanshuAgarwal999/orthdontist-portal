@@ -200,7 +200,6 @@ model LiveSession {
   
   // Session Details
   topic           String        // Main topic or subject
-  category        String        // e.g., "General Dentistry", "Orthodontics", "Oral Surgery"
   tags            String[]      // Array of tags for better organization
   
   // Session Timing
@@ -245,7 +244,6 @@ model LiveSession {
   updatedAt       DateTime      @updatedAt
   
   @@index([status])
-  @@index([category])
   @@index([scheduledAt])
   @@index([isActive])
   @@index([createdById])

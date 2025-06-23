@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/Button"
 import Image from "next/image"
 import Link from "next/link"
 import LogoImg from "../../../assets/images/logo.jpg"
-import { NAV_ITEMS } from "@/constants/navitems"
+import { PRIVATE_NAV_ITEMS, PUBLIC_NAV_ITEMS } from "@/constants/navitems"
 import useUser from "@/hooks/useUser"
 import axiosInstance from "@/config/axios.instance"
 import { useQueryClient } from "@tanstack/react-query"
@@ -11,11 +11,13 @@ import { useQueryClient } from "@tanstack/react-query"
 const Header = () => {
     const { user } = useUser()
     const queryCLient = useQueryClient()
+
     const logout = async () => {
         await axiosInstance.post('/auth/logout')
         queryCLient.clear()
         window.location.href = '/login'
     }
+    const ROUTES = user ? PRIVATE_NAV_ITEMS : PUBLIC_NAV_ITEMS
     return (
         <header className="border-b border-neutral-200 bg-white/80 backdrop-blur-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,7 +26,7 @@ const Header = () => {
                         <Image src={LogoImg.src} alt="logo" width={200} height={50} />
                     </Link>
                     <div className="flex items-center gap-4">
-                        {NAV_ITEMS.map((item, index) => (
+                        {ROUTES.map((item, index) => (
                             <Link key={index} href={item.href} className="text-neutral-600 hover:text-neutral-700 transition-colors">
                                 {item.name}
                             </Link>

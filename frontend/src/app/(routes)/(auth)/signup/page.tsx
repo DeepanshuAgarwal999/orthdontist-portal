@@ -7,16 +7,15 @@ import SignupForm from '@/components/auth/SignupForm';
 import { useMutation } from '@tanstack/react-query';
 import { UserService } from '@/service/user.service';
 
-interface SignupFormData {
+export interface SignupFormData {
     firstName: string;
     lastName: string;
     email: string;
     phone: string;
     password: string;
     confirmPassword: string;
-    role: 'dentist' | 'patient';
     licenseNumber?: string;
-    location?: string;
+    location: string;
     agreeToTerms: boolean;
     agreeToMarketing: boolean;
 }

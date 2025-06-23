@@ -1,85 +1,34 @@
-import React from 'react'
+'use client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Play, Clock, Users, Award, CheckCircle, Star } from 'lucide-react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { CourseService } from '@/service/course.service'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 const features = [
     {
         icon: <Users className="w-8 h-8 text-primary-600" />,
         title: "DESIGNED BY MDS ORTHODONTISTS",
-        description: "Treatment planning for ODONTO Aligners is done by qualified MDS Orthodontists only.",
+        description: "Treatment planning for ALIGNER360 Aligners is done by qualified MDS Orthodontists only.",
         image: "/api/placeholder/300/200"
     },
     {
         icon: <Clock className="w-8 h-8 text-primary-600" />,
         title: "BEST TURN AROUND TIME",
-        description: "ODONTO Aligners provide treatment plans in less than 5 days & aligners in 10 days compared to others who take at least 30 to 45 days.",
+        description: "ALIGNER360 Aligners provide treatment plans in less than 5 days & aligners in 10 days compared to others who take at least 30 to 45 days.",
         image: "/api/placeholder/300/200"
     },
     {
         icon: <Award className="w-8 h-8 text-primary-600" />,
         title: "AFFORDABLE & RELIABLE",
-        description: "ODONTO Aligners have very transparent pricing with affordable packages.",
+        description: "ALIGNER360 Aligners have very transparent pricing with affordable packages.",
         image: "/api/placeholder/300/200"
     }
 ]
-const courses = [
-    {
-        title: "Basic troubleshooting- Mod 1",
-        instructor: "Dr Zita Antao",
-        description: "Its Important to know basic troubleshooting in case the appointment doesn't go as planned. This Mod talks about troubleshooting if there is a fitting issue.",
-        duration: "45 min",
-        level: "Beginner",
-        price: "Free",
-        image: "/api/placeholder/400/250"
-    },
-    {
-        title: "All About Attachments",
-        instructor: "Dr Zita Antao",
-        description: "Learn everything about attachments and their proper application in aligner treatment.",
-        duration: "30 min",
-        level: "Intermediate",
-        price: "Free",
-        image: "/api/placeholder/400/250"
-    },
-    {
-        title: "Aligner Patient Appointments",
-        instructor: "Dr Zita Antao",
-        description: "When treating the patients for aligners, you should be prepared for different types of appointments.",
-        duration: "60 min",
-        level: "Beginner",
-        price: "Free",
-        image: "/api/placeholder/400/250"
-    },
-    {
-        title: "Effective Patient Communication - Module 2",
-        instructor: "Dr Zita Antao",
-        description: "In this module you can see a few different ways to approach the clear aligner discussion.",
-        duration: "40 min",
-        level: "Advanced",
-        price: "Free",
-        image: "/api/placeholder/400/250"
-    },
-    {
-        title: "The Digital Workflow",
-        instructor: "Dr Zita Antao",
-        description: "This course will help you learn about the benefits of Intraoral scanners over traditional impressions for aligner treatments.",
-        duration: "50 min",
-        level: "Intermediate",
-        price: "Free",
-        image: "/api/placeholder/400/250"
-    },
-    {
-        title: "Case Selection for Clear Aligners",
-        instructor: "Dr Zita Antao",
-        description: "This course helps you see all the cases that can be done by clear aligners.",
-        duration: "35 min",
-        level: "Beginner",
-        price: "Free",
-        image: "/api/placeholder/400/250"
-    }
-]
+
 const experts = [
     {
         name: "Dr. Priyanka Shingore",
@@ -101,8 +50,34 @@ const experts = [
     }
 ]
 const AcademyPage = () => {
-
-
+    const router = useRouter()
+    const queryClient = useQueryClient()
+    const { data, isLoading: fetchingCourses } = useQuery({
+        queryKey: ['courses'],
+        queryFn: () => CourseService.getCourses(),
+    })
+    const courses = data?.data?.filter((vid) => !!vid.videoUrl)
+    const { data: myEnrollmentsData, isLoading: fetchingMyEnrollments } = useQuery({
+        queryKey: ['my-enrollments'],
+        queryFn: () => CourseService.getMyEnrollments(),
+    })
+    const enrollMutation = useMutation({
+        mutationFn: ({ id, slug }: { id: string, slug: string }) => CourseService.enrollInCourse(id),
+        onSuccess: (data) => {
+            toast.success('Successfully enrolled in course!');
+            queryClient.invalidateQueries({ queryKey: ['courses'] });
+            queryClient.invalidateQueries({ queryKey: ['my-enrollments'] });
+            router.push(`/courses/${data.id}`)
+        },
+        onError: (error: any, variables) => {
+            if (error.response?.status === 409) {
+                router.push(`/courses/${variables.slug}`)
+            }
+            else {
+                toast.error(error.response?.data?.message || 'Failed to enroll in course');
+            }
+        },
+    });
     return (
         <div className="min-h-screen bg-gradient-to-b from-neutral-50 to-white">
             {/* Hero Section */}
@@ -123,15 +98,15 @@ const AcademyPage = () => {
                 </div>
             </section>
 
-            {/* Why Choose ODONTO Section */}
+            {/* Why Choose ALIGNER360 Section */}
             <section className="py-20 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl sm:text-4xl font-bold text-neutral-900 mb-4">
-                            Why Choose ODONTO For Your Patients?
+                            Why Choose ALIGNER360 For Your Patients?
                         </h2>
                         <p className="text-xl text-neutral-600 max-w-3xl mx-auto">
-                            Discover the advantages that make ODONTO the preferred choice for dental professionals worldwide
+                            Discover the advantages that make ALIGNER360 the preferred choice for dental professionals worldwide
                         </p>
                     </div>
 
@@ -177,16 +152,19 @@ const AcademyPage = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {courses.map((course, index) => (
+                        {courses?.map((course, index) => (
                             <Card key={index} className="group hover:shadow-2xl transition-all duration-300 overflow-hidden border-0 shadow-lg">
-                                <div className="relative overflow-hidden">
-                                    <img
-                                        src={course.image}
-                                        alt={course.title}
-                                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                                    />
+                                <div className="relative overflow-hidden h-48">
+                                    <div className=''>
+                                        <video muted className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ' >
+                                            <source src={course.videoUrl} type="video/mp4" />
+                                            <source src={course.videoUrl} type="video/webm" />
+                                            <source src={course.videoUrl} type="video/ogg" />
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
                                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <Button size="lg" variant="accent" className="shadow-2xl">
+                                        <Button size="lg" variant="accent" className="shadow-2xl" onClick={() => router.push(`/courses/${course.slug}`)}>
                                             <Play className="w-5 h-5 mr-2" />
                                             Watch Now
                                         </Button>
@@ -197,26 +175,16 @@ const AcademyPage = () => {
                                 </div>
 
                                 <CardHeader className="pb-3">
-                                    <div className="flex items-center gap-2 text-sm text-neutral-500 mb-2">
-                                        <Clock className="w-4 h-4" />
-                                        <span>{course.duration}</span>
-                                        <Badge variant="outline" className="text-xs">
-                                            {course.level}
-                                        </Badge>
-                                    </div>
                                     <CardTitle className="text-lg font-bold text-neutral-900 line-clamp-2">
                                         {course.title}
                                     </CardTitle>
-                                    <CardDescription className="text-primary-600 font-medium">
-                                        {course.instructor}
-                                    </CardDescription>
                                 </CardHeader>
 
                                 <CardContent className="pt-0">
                                     <p className="text-neutral-600 text-sm leading-relaxed line-clamp-3 mb-4">
                                         {course.description}
                                     </p>
-                                    <Button className="w-full" variant="outline">
+                                    <Button className="w-full" variant="outline" onClick={() => enrollMutation.mutate({ id: course.id, slug: course.slug })}>
                                         Enroll Now
                                     </Button>
                                 </CardContent>
@@ -308,7 +276,7 @@ const AcademyPage = () => {
                         Ready to Transform Your Practice?
                     </h2>
                     <p className="text-xl text-neutral-600 mb-8 max-w-2xl mx-auto">
-                        Join thousands of dental professionals who have elevated their clear aligner expertise with ODONTO Academy
+                        Join thousands of dental professionals who have elevated their clear aligner expertise with ALIGNER360 Academy
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button size="xl" variant="gradient" className="shadow-2xl">

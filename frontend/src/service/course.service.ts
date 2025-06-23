@@ -67,7 +67,7 @@ export class CourseService {
     if (query?.sortBy) params.append("sortBy", query.sortBy);
     if (query?.sortOrder) params.append("sortOrder", query.sortOrder);
 
-    const response = await axiosInstance.get(`/courses?${params.toString()}`);
+    const response = await axiosInstance.get<{ data: Course[] }>(`/courses?${params.toString()}`);
     return response.data;
   }
 
@@ -92,7 +92,6 @@ export class CourseService {
     return response.data;
   }
 
-
   // Enroll in course
   static async enrollInCourse(courseId: string) {
     const response = await axiosInstance.post(`/courses/${courseId}/enroll`);
@@ -106,7 +105,7 @@ export class CourseService {
     if (query?.limit) params.append("limit", query.limit.toString());
     if (query?.status) params.append("status", query.status);
 
-    const response = await axiosInstance.get(`/courses/my-enrollments?${params.toString()}`);
+    const response = await axiosInstance.get<{ data: CourseEnrollment[] }>(`/courses/enrollment/my-enrollments`);
     return response.data;
   }
 

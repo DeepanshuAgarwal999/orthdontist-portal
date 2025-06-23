@@ -166,6 +166,8 @@ export class BlogQueryDto {
   @IsOptional()
   @IsString()
   sortOrder?: 'asc' | 'desc';
+
+
 }
 
 export class PublishBlogDto {

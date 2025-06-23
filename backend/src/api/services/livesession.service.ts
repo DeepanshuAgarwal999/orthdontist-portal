@@ -459,17 +459,6 @@ export class LiveSessionService {
     ]);
 
     // Get popular categories
-    const popularCategories = await this.prisma.liveSession.groupBy({
-      by: ['category'],
-      _count: { category: true },
-      where: {
-        category: { not: null },
-      },
-      orderBy: {
-        _count: { category: 'desc' },
-      },
-      take: 10,
-    });
 
     return {
       totalSessions,
@@ -479,10 +468,6 @@ export class LiveSessionService {
       cancelledSessions,
       totalRegistrations: totalRegistrations._sum.registrationCount || 0,
       totalAttendance: totalAttendance._sum.attendanceCount || 0,
-      popularCategories: popularCategories.map((cat) => ({
-        category: cat.category,
-        count: cat._count.category,
-      })),
     };
   }
 
@@ -534,24 +519,5 @@ export class LiveSessionService {
     return sessions;
   }
 
-  // Get unique session categories
-  async getLiveSessionCategories() {
-    const categories = await this.prisma.liveSession.findMany({
-      where: {
-        category: { not: null },
-        isActive: true, // Only get categories from active sessions
-      },
-      select: {
-        category: true,
-      },
-      distinct: ['category'],
-      orderBy: {
-        category: 'asc',
-      },
-    });
 
-    return categories
-      .map((session) => session.category)
-      .filter((category): category is string => !!category);
-  }
 }

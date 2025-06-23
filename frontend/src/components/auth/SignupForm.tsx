@@ -12,22 +12,9 @@ import {
     PhoneIcon,
     MapPinIcon,
     ShieldCheckIcon,
-    GoogleIcon
 } from '@/components/ui/Icons';
+import { SignupFormData } from '@/app/(routes)/(auth)/signup/page';
 
-interface SignupFormData {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    password: string;
-    confirmPassword: string;
-    role: 'dentist' | 'patient';
-    licenseNumber?: string;
-    location?: string;
-    agreeToTerms: boolean;
-    agreeToMarketing: boolean;
-}
 
 interface SignupFormProps {
     onSubmit: (data: SignupFormData) => Promise<void>;
@@ -42,7 +29,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSubmit, loading = false }) =>
         phone: '',
         password: '',
         confirmPassword: '',
-        role: 'patient',
         licenseNumber: '',
         location: '',
         agreeToTerms: false,
@@ -85,8 +71,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSubmit, loading = false }) =>
                 newErrors.confirmPassword = 'Please confirm your password';
             } else if (formData.password !== formData.confirmPassword) {
                 newErrors.confirmPassword = 'Passwords do not match';
-            } if (formData.role === 'dentist' && !formData.licenseNumber) {
-                newErrors.licenseNumber = 'License number is required for dentists';
             }
         } if (step === 3) {
             if (!formData.agreeToTerms) {
@@ -215,47 +199,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSubmit, loading = false }) =>
                                 required
                             />
 
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium text-neutral-700">
-                                    I am a... <span className="text-red-500">*</span>
-                                </label>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <label className={`
-                    relative flex items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition-all
-                    ${formData.role === 'patient'
-                                            ? 'border-primary-500 bg-primary text-white'
-                                            : 'border-neutral-200 hover:border-neutral-300'
-                                        }
-                  `}>
-                                        <input
-                                            type="radio"
-                                            name="role"
-                                            value="patient"
-                                            checked={formData.role === 'patient'}
-                                            onChange={handleInputChange('role')}
-                                            className="sr-only"
-                                        />
-                                        <span className="font-medium">Patient</span>
-                                    </label>
-                                    <label className={`
-                    relative flex items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition-all
-                    ${formData.role === 'dentist'
-                                            ? 'border-primary-500 bg-primary text-white'
-                                            : 'border-neutral-200 hover:border-neutral-300'
-                                        }
-                  `}>
-                                        <input
-                                            type="radio"
-                                            name="role"
-                                            value="dentist"
-                                            checked={formData.role === 'dentist'}
-                                            onChange={handleInputChange('role')}
-                                            className="sr-only"
-                                        />
-                                        <span className="font-medium">dentist</span>
-                                    </label>
-                                </div>
-                            </div>
+
                         </div>
                     )}
 
@@ -307,28 +251,28 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSubmit, loading = false }) =>
                                 required
                             />
 
-                            {formData.role === 'dentist' && (
-                                <>
-                                    <Input
-                                        label="License Number"
-                                        type="text"
-                                        placeholder="Your dental license number"
-                                        value={formData.licenseNumber}
-                                        onChange={handleInputChange('licenseNumber')}
-                                        error={errors.licenseNumber}
-                                        icon={<ShieldCheckIcon size={20} />}
-                                        required
-                                    />
-                                    <Input
-                                        label="Practice Location (Optional)"
-                                        type="text"
-                                        placeholder="City, State"
-                                        value={formData.location}
-                                        onChange={handleInputChange('location')}
-                                        icon={<MapPinIcon size={20} />}
-                                    />
-                                </>
-                            )}
+
+                            <>
+                                <Input
+                                    label="License Number (optional)"
+                                    type="text"
+                                    placeholder="Your dental license number"
+                                    value={formData.licenseNumber}
+                                    onChange={handleInputChange('licenseNumber')}
+                                    error={errors.licenseNumber}
+                                    icon={<ShieldCheckIcon size={20} />}
+                                    required
+                                />
+                                <Input
+                                    label="Practice Location *"
+                                    type="text"
+                                    placeholder="City, State"
+                                    value={formData.location}
+                                    onChange={handleInputChange('location')}
+                                    icon={<MapPinIcon size={20} />}
+                                />
+                            </>
+
 
                             <div className="bg-neutral-50 p-4 rounded-lg">
                                 <h4 className="text-sm font-medium text-neutral-700 mb-2">Password Requirements:</h4>
@@ -367,9 +311,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSubmit, loading = false }) =>
                                     <div>
                                         <h4 className="font-semibold text-primary-800 mb-2">Account Verification</h4>
                                         <p className="text-sm text-primary-700">
-                                            {formData.role === 'dentist'
-                                                ? 'Your account will be reviewed by our team before activation. You\'ll receive an email confirmation within 24-48 hours.'
-                                                : 'You\'ll receive an email verification link to activate your account.'
+                                            {'You\'ll receive an email verification link to activate your account.'
                                             }
                                         </p>
                                     </div>
@@ -388,8 +330,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSubmit, loading = false }) =>
                                         I agree to the{' '}
                                         <Link href="/terms" className="text-primary-600 hover:text-primary-700 underline">
                                             Terms of Service
-                                        </Link>{' '}
-                                        and{' '}
+                                        </Link>
+                                        and
                                         <Link href="/privacy" className="text-primary-600 hover:text-primary-700 underline">
                                             Privacy Policy
                                         </Link>
@@ -448,30 +390,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSubmit, loading = false }) =>
                     </div>
                 </form>
 
-                {/* OAuth Options */}
-                {/* <div className="mt-8">
-                    <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-neutral-200" />
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white text-neutral-500">Or continue with</span>
-                        </div>
-                    </div>
 
-                    <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full mt-4 border-neutral-200 hover:bg-neutral-50"
-                    >
-                        <GoogleIcon size={20} className="mr-2" />
-                        Google
-                    </Button>
-                </div> */}
-
-                {/* Login Link */}
                 <p className="text-center text-sm text-neutral-600 mt-8">
-                    Already have an account?{' '}
+                    Already have an account?
                     <Link href="/login" className="font-medium text-primary-600 hover:text-primary-700">
                         Sign in
                     </Link>

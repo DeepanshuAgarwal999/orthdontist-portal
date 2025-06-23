@@ -23,8 +23,6 @@ import {
 } from 'lucide-react';
 import useUser from '@/hooks/useUser';
 import { toast } from 'sonner';
-import CourseProgress from '@/components/courses/CourseProgress';
-import CourseReviews from '@/components/courses/CourseReviews';
 import CourseRecommendations from '@/components/courses/CourseRecommendations';
 
 const CourseDetailPage: React.FC = () => {
@@ -106,7 +104,6 @@ const CourseDetailPage: React.FC = () => {
     const course = courseData.data;
     const userEnrollment = enrollmentData;
     const userHasEnrolled = !!userEnrollment;
-    const userHasCompleted = userEnrollment?.status === 'COMPLETED';
 
     const handleEnroll = () => {
         if (!user) {
@@ -125,21 +122,9 @@ const CourseDetailPage: React.FC = () => {
         }).format(price);
     };
 
-    const getLevelColor = (level: string) => {
-        switch (level) {
-            case 'BEGINNER': return 'bg-green-100 text-green-800';
-            case 'INTERMEDIATE': return 'bg-blue-100 text-blue-800';
-            case 'ADVANCED': return 'bg-orange-100 text-orange-800';
-            case 'EXPERT': return 'bg-red-100 text-red-800';
-            default: return 'bg-gray-100 text-gray-800';
-        }
-    };
+
     const tabs = [
         { id: 'overview', label: 'Overview' },
-        { id: 'curriculum', label: 'Curriculum' },
-        ...(userHasEnrolled ? [{ id: 'progress', label: 'My Progress' }] : []),
-        { id: 'instructor', label: 'Instructor' },
-        { id: 'reviews', label: 'Reviews' },
     ];
 
     return (
@@ -161,10 +146,7 @@ const CourseDetailPage: React.FC = () => {
                         {/* Course Header */}
                         <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
                             <div className="flex flex-wrap gap-2 mb-4">
-                                <Badge className={getLevelColor(course.level)}>
-                                    {course.level.charAt(0) + course.level.slice(1).toLowerCase()}
-                                </Badge>
-                                <Badge variant="outline">{course.category}</Badge>                {course.tags.slice(0, 3).map((tag: string) => (
+                                {course.tags.slice(0, 3).map((tag: string) => (
                                     <Badge key={tag} variant="secondary">
                                         {tag}
                                     </Badge>
@@ -296,46 +278,6 @@ const CourseDetailPage: React.FC = () => {
                                     </div>
                                 )}
 
-                                {activeTab === 'progress' && userHasEnrolled && (<CourseProgress
-                                    enrollmentId={userEnrollment.id}
-                                    courseId={course.id}
-                                    currentProgress={userEnrollment.progress}
-                                    courseDuration={course.duration}
-                                    courseTitle={course.title}
-                                    status={userEnrollment.status}
-                                    completedAt={userEnrollment.completedAt}
-                                    instructorName={`${course.createdBy.firstName} ${course.createdBy.lastName}`}
-                                />
-                                )}
-
-                                {activeTab === 'instructor' && (
-                                    <div>
-                                        <h3 className="text-lg font-semibold mb-4">About the Instructor</h3>
-                                        <div className="flex items-start space-x-4">
-                                            <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-                                                <User className="w-8 h-8 text-gray-400" />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-semibold text-lg">
-                                                    {course.createdBy.firstName} {course.createdBy.lastName}
-                                                </h4>
-                                                <p className="text-gray-600">{course.createdBy.email}</p>
-                                                <p className="text-sm text-gray-500 mt-2">
-                                                    Experienced dental professional with expertise in {course.category.toLowerCase()}.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}                {activeTab === 'reviews' && (
-                                    <CourseReviews
-                                        courseId={course.id}
-                                        courseSlug={course.slug}
-                                        userHasEnrolled={userHasEnrolled}
-                                        userHasCompleted={userHasCompleted}
-                                        overallRating={course.rating || 0}
-                                        totalReviews={course.reviewCount || 0}
-                                    />
-                                )}
                             </div>
                         </div>
                     </div>
@@ -427,7 +369,8 @@ const CourseDetailPage: React.FC = () => {
                                             ></div>
                                         </div>
                                     </div>
-                                )}              </CardContent>
+                                )}
+                            </CardContent>
                         </Card>
                     </div>
                 </div>
@@ -438,7 +381,6 @@ const CourseDetailPage: React.FC = () => {
                         currentCourseId={course.id}
                         currentCourseCategory={course.category}
                         currentCourseTags={course.tags}
-                        userLevel={userEnrollment?.course?.level}
                     />
                 </div>
             </div>

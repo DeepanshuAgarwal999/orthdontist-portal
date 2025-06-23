@@ -20,9 +20,11 @@ async function bootstrap() {
       'https://deintist-frontend.vercel.app/', // Add your actual frontend domain
       process.env.FRONTEND_URL || '',
     ].filter(Boolean),
+
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+    exposedHeaders: ['Set-Cookie', 'Content-Type', 'Authorization', 'Cookie'],
   });
   app.useGlobalPipes(
     new ValidationPipe({

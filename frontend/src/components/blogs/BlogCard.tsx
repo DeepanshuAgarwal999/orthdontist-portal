@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Blog } from '@/types/blog';
+import { usePathname } from 'next/navigation';
 
 interface BlogCardProps {
     blog: Blog;
@@ -15,6 +16,8 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, className = '' }) => {
             day: 'numeric'
         });
     };
+    const pathname = usePathname()
+    const isCaseStudy = pathname.includes('/case-study')
 
     const readingTime = Math.ceil(blog.content.length / 1000); // Rough estimate
 
@@ -62,7 +65,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, className = '' }) => {
 
                 {/* Title */}
                 <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 hover:text-blue-600 transition-colors">
-                    <Link href={`/blogs/${blog.slug}`}>
+                    <Link href={`/${isCaseStudy ? 'case-study' : 'blogs'}/${blog.slug}`}>
                         {blog.title}
                     </Link>
                 </h2>
@@ -108,7 +111,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, className = '' }) => {
                     </div>
 
                     <Link
-                        href={`/blogs/${blog.slug}`}
+                        href={`/${isCaseStudy ? 'case-study' : 'blogs'}/${blog.slug}`}
                         className="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors"
                     >
                         Read More →

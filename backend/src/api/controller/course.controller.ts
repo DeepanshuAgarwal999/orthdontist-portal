@@ -292,7 +292,7 @@ export class CourseController {
       // Handle file uploads to ImageKit (similar to create method)
       const uploadPromises = [];
       const uploadedFiles: any = {};
- 
+
       // Upload thumbnail image if provided
       if (files?.thumbnailImage && files.thumbnailImage[0]) {
         const thumbnailFile = files.thumbnailImage[0];
@@ -695,7 +695,7 @@ export class CourseController {
    * Get my enrollments (Authenticated users)
    * GET /api/v1/courses/my-enrollments
    */
-  @Get('my-enrollments')
+  @Get('enrollment/my-enrollments')
   @UseGuards(AuthGuard)
   async getMyEnrollments(
     @Query() query: any,

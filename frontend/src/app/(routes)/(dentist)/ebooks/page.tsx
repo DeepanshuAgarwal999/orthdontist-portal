@@ -2,6 +2,9 @@
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { useQuery } from '@tanstack/react-query';
+import { EbookService } from '@/service/ebook.service';
+import { toast } from 'sonner';
 
 // Download Icon component
 const DownloadIcon: React.FC<{ className?: string; size?: number }> = ({ className = '', size = 20 }) => (
@@ -63,7 +66,7 @@ interface Ebook {
     title: string;
     author: string;
     description: string;
-    coverImage: string;
+    thumbnailImage: string;
     category: string;
     pages: number;
     rating: number;
@@ -73,145 +76,53 @@ interface Ebook {
     tags: string[];
     isPremium: boolean;
     price?: number;
-    pdfUrl: string;
+    pdf: string;
 }
 
-const ebooksData: Ebook[] = [
-    {
-        id: 1,
-        title: "How to Build a 5 Lakh Practice",
-        author: "Dr. Rajesh Kumar",
-        description: "A comprehensive guide to building a successful dental practice from scratch. Learn proven strategies for patient acquisition, practice management, and revenue optimization.",
-        coverImage: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=400&fit=crop",
-        category: "Practice Management",
-        pages: 150,
-        rating: 5,
-        downloads: 2840,
-        fileSize: "12.5 MB",
-        publishedYear: 2024,
-        tags: ["Business", "Practice Growth", "Revenue"],
-        isPremium: false,
-        pdfUrl: "/ebooks/5-lakh-practice.pdf"
-    },
-    {
-        id: 2,
-        title: "Advanced Endodontic Techniques",
-        author: "Dr. Priya Sharma",
-        description: "Master the latest endodontic procedures with step-by-step guides, case studies, and expert insights. Includes modern rotary techniques and digital workflows.",
-        coverImage: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=300&h=400&fit=crop",
-        category: "Clinical Procedures",
-        pages: 220,
-        rating: 5,
-        downloads: 1850,
-        fileSize: "25.8 MB",
-        publishedYear: 2024,
-        tags: ["Endodontics", "Clinical", "Procedures"],
-        isPremium: true,
-        price: 299,
-        pdfUrl: "/ebooks/advanced-endodontic.pdf"
-    },
-    {
-        id: 3,
-        title: "Digital Dentistry Revolution",
-        author: "Dr. Arjun Mehta",
-        description: "Explore the future of dentistry with digital technologies. From CAD/CAM to 3D printing, discover how to integrate modern tech into your practice.",
-        coverImage: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=300&h=400&fit=crop",
-        category: "Technology",
-        pages: 180,
-        rating: 4,
-        downloads: 1520,
-        fileSize: "18.2 MB",
-        publishedYear: 2023,
-        tags: ["Digital", "Technology", "CAD/CAM"],
-        isPremium: false,
-        pdfUrl: "/ebooks/digital-dentistry.pdf"
-    },
-    {
-        id: 4,
-        title: "Pediatric Dentistry Excellence",
-        author: "Dr. Sunita Patel",
-        description: "Complete guide to treating young patients. Covers behavior management, preventive care, and specialized pediatric procedures with compassionate care approaches.",
-        coverImage: "https://images.unsplash.com/photo-1612277795421-9bc7706a4a34?w=300&h=400&fit=crop",
-        category: "Pediatric Dentistry",
-        pages: 195,
-        rating: 5,
-        downloads: 1340,
-        fileSize: "15.7 MB",
-        publishedYear: 2024,
-        tags: ["Pediatric", "Child Care", "Prevention"],
-        isPremium: true,
-        price: 199,
-        pdfUrl: "/ebooks/pediatric-excellence.pdf"
-    },
-    {
-        id: 5,
-        title: "Oral Surgery Fundamentals",
-        author: "Dr. Vikram Singh",
-        description: "Essential oral surgery techniques for general practitioners. Includes extractions, implant basics, and minor surgical procedures with safety protocols.",
-        coverImage: "https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=300&h=400&fit=crop",
-        category: "Oral Surgery",
-        pages: 240,
-        rating: 4,
-        downloads: 980,
-        fileSize: "22.1 MB",
-        publishedYear: 2023,
-        tags: ["Surgery", "Implants", "Extractions"],
-        isPremium: false,
-        pdfUrl: "/ebooks/oral-surgery.pdf"
-    },
-    {
-        id: 6,
-        title: "Cosmetic Dentistry Mastery",
-        author: "Dr. Neha Gupta",
-        description: "Transform smiles with advanced cosmetic techniques. Covers veneers, whitening, bonding, and smile design principles for aesthetic excellence.",
-        coverImage: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=300&h=400&fit=crop",
-        category: "Cosmetic Dentistry",
-        pages: 210,
-        rating: 5,
-        downloads: 2100,
-        fileSize: "28.5 MB",
-        publishedYear: 2024,
-        tags: ["Cosmetic", "Aesthetics", "Veneers"],
-        isPremium: true,
-        price: 399,
-        pdfUrl: "/ebooks/cosmetic-mastery.pdf"
-    }
-];
 
 const EbooksPage = () => {
-    const [downloadingId, setDownloadingId] = useState<number | null>(null);
+    const [downloadingId, setDownloadingId] = useState<number | null>(null); const { data, isLoading } = useQuery({
+        queryKey: ['ebooks'],
+        queryFn: () => EbookService.getAllBooks(),
+    });
 
     const handleDownload = async (ebook: Ebook) => {
         setDownloadingId(ebook.id);
-
+        console.log({ ebook });
         try {
-            // Simulate download process
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            const response = await fetch(ebook.pdf);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
-            // In a real implementation, you would:
-            // 1. Check user authentication and permissions
-            // 2. Track download analytics
-            // 3. Serve the actual PDF file
+            const blob = await response.blob();
 
-            // For demo purposes, we'll create a download link
+            // Create a blob URL
+            const blobUrl = window.URL.createObjectURL(blob);
+
+            // Create download link
             const link = document.createElement('a');
-            link.href = ebook.pdfUrl;
+            link.href = blobUrl;
             link.download = `${ebook.title.replace(/\s+/g, '_')}.pdf`;
             document.body.appendChild(link);
             link.click();
-            document.body.removeChild(link);
 
-            // Show success message (you can implement toast notifications)
-            alert(`"${ebook.title}" download started successfully!`);
+            // Clean up
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(blobUrl);
 
         } catch (error) {
             console.error('Download failed:', error);
-            alert('Download failed. Please try again.');
+            toast.error('Download failed. Please try again.');
         } finally {
             setDownloadingId(null);
         }
     };
+    if (isLoading) {
+        return <div>Loading...</div>
+    }
 
+    const { data: ebooksData } = data as { data: Ebook[] }
     return (
         <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50">
             {/* Header Section */}
@@ -247,11 +158,11 @@ const EbooksPage = () => {
             </div>            {/* Ebooks Grid */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {ebooksData.map((ebook) => (
+                    {ebooksData?.map((ebook) => (
                         <Card key={ebook.id} className="hover:shadow-lg transition-all duration-300 hover:scale-105">
                             <div className="relative">
                                 <img
-                                    src={ebook.coverImage}
+                                    src={ebook.thumbnailImage}
                                     alt={ebook.title}
                                     className="w-full h-64 object-cover rounded-t-xl"
                                 />
@@ -269,9 +180,7 @@ const EbooksPage = () => {
                                 <CardTitle className="text-lg font-semibold text-neutral-900 line-clamp-2">
                                     {ebook.title}
                                 </CardTitle>
-                                <p className="text-sm text-primary-600 font-medium">
-                                    by {ebook.author}
-                                </p>
+
                             </CardHeader>
 
                             <CardContent className="pt-0">
@@ -279,26 +188,8 @@ const EbooksPage = () => {
                                     {ebook.description}
                                 </p>
 
-                                {/* Rating */}
-                                <div className="mb-4">
-                                    <StarRating rating={ebook.rating} />
-                                </div>
 
-                                {/* Ebook Details */}
-                                <div className="grid grid-cols-2 gap-4 mb-4 text-xs text-neutral-500">
-                                    <div>
-                                        <span className="font-medium">Pages:</span> {ebook.pages}
-                                    </div>
-                                    <div>
-                                        <span className="font-medium">Size:</span> {ebook.fileSize}
-                                    </div>
-                                    <div>
-                                        <span className="font-medium">Year:</span> {ebook.publishedYear}
-                                    </div>
-                                    <div>
-                                        <span className="font-medium">Downloads:</span> {ebook.downloads.toLocaleString()}
-                                    </div>
-                                </div>
+
 
                                 {/* Tags */}
                                 <div className="mb-4">

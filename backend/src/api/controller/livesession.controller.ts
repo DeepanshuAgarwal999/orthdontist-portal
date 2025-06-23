@@ -244,25 +244,7 @@ export class LiveSessionController {
     });
   }
 
-  /**
-   * Get unique session categories (Public access)
-   * GET /api/v1/live-sessions/categories
-   */
-  @Get('categories')
-  async getLiveSessionCategories(@Res() res: Response) {
-    const categories = await this.liveSessionService.getLiveSessionCategories();
 
-    return res.status(HttpStatus.OK).json({
-      success: true,
-      message: 'Live session categories retrieved successfully',
-      data: categories,
-    });
-  }
-
-  /**
-   * Get live session by slug (Public access for active sessions, Admin for all)
-   * GET /api/v1/live-sessions/slug/:slug
-   */
   @Get('slug/:slug')
   async getLiveSessionBySlug(
     @Param('slug') slug: string,

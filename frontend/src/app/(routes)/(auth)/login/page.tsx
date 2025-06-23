@@ -22,9 +22,7 @@ const Login: React.FC = () => {
 
     useEffect(() => {
         const messageParam = searchParams.get('message');
-        if (messageParam === 'account-pending') {
-            setMessage('Your dentist account is under review. You\'ll receive an email once approved.');
-        } else if (messageParam === 'verify-email') {
+        if (messageParam === 'verify-email') {
             setMessage('Please check your email to verify your account before logging in.');
         } else if (messageParam === 'session-expired') {
             setError('Your session has expired. Please log in again.');
@@ -45,8 +43,6 @@ const Login: React.FC = () => {
             const user = data.user;
             if (user.role === 'admin') {
                 return
-            } else if (user.role === 'dentist') {
-                router.push('/dentists');
             } else {
                 router.push('/');
             }

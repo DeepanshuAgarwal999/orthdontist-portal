@@ -5,7 +5,7 @@ export const PUBLIC_NAV_ITEMS = [
   },
   {
     name: "Aligners",
-    href: "/orthodontist-list",
+    href: "/aligners",
   },
   {
     name: "Process",
@@ -16,9 +16,10 @@ export const PUBLIC_NAV_ITEMS = [
     href: "/benefits",
   },
   {
-    name: "Contact Us",
-    href: "/contact",
-  },
+    name: "Case Studies",
+    href: "/case-studies",
+  }
+
 ];
 
 export const PRIVATE_NAV_ITEMS = [
@@ -39,10 +40,6 @@ export const PRIVATE_NAV_ITEMS = [
     href: "/ebooks",
   },
 
-  {
-    name: "Contact Us",
-    href: "/contact",
-  },
   {
     name: "Academy",
     href: "/academy",

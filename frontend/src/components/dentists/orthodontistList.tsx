@@ -164,11 +164,11 @@ const OrthodontistList = () => {
         </div>)
     }
     return (
-        <div className="min-h-screen bg-neutral-50">
+        <div className=" bg-neutral-50">
             {/* Search Header */}
-            <div className="bg-white shadow-sm border-b border-neutral-200 px-4 py-4">
+            <div>
                 <div className="max-w-7xl mx-auto">
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-4 my-6">
                         <div className="flex-1 relative">
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400" size={20} />
                             <input
@@ -186,9 +186,9 @@ const OrthodontistList = () => {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto flex h-[calc(100vh-100px)]">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row h-[calc(100vh-100px)]">
                 {/* Left Sidebar - Clinic List */}
-                <div className="w-1/3 bg-white border-r border-neutral-200 overflow-y-auto">
+                <div className="w-full md:w-1/3 bg-white border-r border-neutral-200 overflow-y-auto">
                     {/* Results Header */}
                     <div className="bg-primary-600  px-4 py-3">
                         <h2 className="font-semibold">Orthodontist Clinics Near You: {filteredOrthodontists.length}</h2>

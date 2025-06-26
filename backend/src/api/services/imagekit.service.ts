@@ -38,9 +38,7 @@ export class ImageKitService {
       this.logger.error('Failed to initialize ImageKit:', error.message);
     }
   }
-  /**
-   * Upload a file to ImageKit
-   */ async uploadFile(
+   async uploadFile(
     file: Buffer | string,
     fileName: string,
     folder: string,

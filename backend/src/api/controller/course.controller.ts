@@ -29,7 +29,6 @@ import {
 } from '../dto/course.dto';
 import { AuthGuard, UserRole } from '../../guards/auth.guard';
 import { RolesGuard, Roles } from '../../guards/role.guard';
-import { isValidObjectId } from '../../helpers/validation.helper';
 
 @Controller('courses')
 export class CourseController {

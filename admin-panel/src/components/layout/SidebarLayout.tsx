@@ -15,7 +15,8 @@ import {
     GraduationCap,
     BookOpen,
     Video,
-    MessageCircleIcon
+    MessageCircleIcon,
+    Stethoscope
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AuthService } from '@/services/auth.service';
@@ -49,6 +50,11 @@ const navigationItems = [
         name: 'Live Sessions',
         href: '/dashboard/live-sessions',
         icon: Video,
+    },
+    {
+        name: 'Case Studies',
+        href: '/dashboard/case-studies',
+        icon: Stethoscope,
     },
     {
         name: "Contacts",

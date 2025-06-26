@@ -12,7 +12,8 @@ import {
     Eye,
     Edit,
     GraduationCap,
-    BookOpen
+    BookOpen,
+    Stethoscope
 } from 'lucide-react';
 import { BlogService } from '@/services/blog.service';
 import { AdminCourseService } from '@/services/course.service';
@@ -33,15 +34,12 @@ const DashboardPage: React.FC = () => {
     const { data: ebookStats } = useQuery({
         queryKey: ['ebook-statistics'],
         queryFn: () => AdminEbookService.getEbookStatistics(),
-    }); const { data: dentists } = useQuery({
-        queryKey: ['dentists'],
-        queryFn: async () => await axiosInstance.get('/dentists')
     });
+
     const { data: users } = useQuery({
         queryKey: ['users'],
         queryFn: async () => await axiosInstance.get('/users')
     });
-    const totalDentists = dentists?.data.data.length || 0;
     const totalUsers = users?.data.totalUsers || 0;
     const stats = blogStats?.data;
     const courseStatsData = courseStats?.data;
@@ -172,7 +170,7 @@ const DashboardPage: React.FC = () => {
                     <p className="text-sm text-gray-600 mt-1">Create and manage your content</p>
                 </div>
                 <div className="p-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                         <Link
                             href="/dashboard/blogs/new"
                             className="flex items-center justify-center px-4 py-3 border border-purple-200 rounded-lg shadow-sm bg-gradient-to-r from-purple-50 to-violet-50 text-sm font-medium text-purple-700 hover:from-purple-100 hover:to-violet-100 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200"
@@ -208,9 +206,7 @@ const DashboardPage: React.FC = () => {
                         >
                             <Plus className="w-5 h-5 mr-2 text-teal-600" />
                             New Ebook
-                        </Link>
-
-                        <Link
+                        </Link>                        <Link
                             href="/dashboard/ebooks"
                             className="flex items-center justify-center px-4 py-3 border border-teal-200 rounded-lg shadow-sm bg-gradient-to-r from-teal-50 to-cyan-50 text-sm font-medium text-teal-700 hover:from-teal-100 hover:to-cyan-100 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all duration-200"
                         >
@@ -218,7 +214,23 @@ const DashboardPage: React.FC = () => {
                             Manage Ebooks
                         </Link>
 
-                       
+                        <Link
+                            href="/dashboard/case-studies/create"
+                            className="flex items-center justify-center px-4 py-3 border border-indigo-200 rounded-lg shadow-sm bg-gradient-to-r from-indigo-50 to-blue-50 text-sm font-medium text-indigo-700 hover:from-indigo-100 hover:to-blue-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                        >
+                            <Plus className="w-5 h-5 mr-2 text-indigo-600" />
+                            New Case Study
+                        </Link>
+
+                        <Link
+                            href="/dashboard/case-studies"
+                            className="flex items-center justify-center px-4 py-3 border border-indigo-200 rounded-lg shadow-sm bg-gradient-to-r from-indigo-50 to-blue-50 text-sm font-medium text-indigo-700 hover:from-indigo-100 hover:to-blue-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+                        >
+                            <Stethoscope className="w-5 h-5 mr-2 text-indigo-600" />
+                            Manage Case Studies
+                        </Link>
+
+
                     </div>
                 </div>
             </div>

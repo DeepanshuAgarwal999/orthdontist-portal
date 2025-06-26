@@ -295,6 +295,29 @@ model Contact{
   updatedAt    DateTime @updatedAt
 }
 
+model CaseStudy {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  age            String
+  gender         Gender
+  case           String
+  upper          String
+  lower          String
+  imageBefore    String
+  imageAfter     String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model AlignerProcess{
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  videoUrl      String         @default("")
+}
+
+enum Gender {
+  M
+  F
+}
 
 enum EnrollmentStatus {
   ACTIVE

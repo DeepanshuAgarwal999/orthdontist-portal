@@ -5,8 +5,8 @@ import React from 'react'
 
 const FreeCheckup = () => {
     return (
-        <div className='py-20 bg-blue-900 rounded-4xl mx-4 relative'>
-                <Image className='absolute -scale-x-100 right-0 bottom-0 opacity-20' alt='Aligner360 Aligners' src={'/images/brace2.png'} width={350} height={400}  />
+        <div className='py-20 bg-[#2563eb] rounded-4xl mx-4 relative overflow-hidden px-4'>
+                <Image className='absolute -scale-x-100 -right-10 -bottom-6 opacity-10 rounded-lg' alt='Aligner360 Aligners' src={'/images/brace2.png'} width={350} height={400}  />
             <div className='flex flex-col md:flex-row items-center gap-10 justify-between max-w-7xl mx-auto'>
                 <Image src={'/images/doctor-illustration.png'} alt='orthodontist' width={800} height={400} className='w-full h-full object-cover ' />
                 <div className=' p-12 text-white'>

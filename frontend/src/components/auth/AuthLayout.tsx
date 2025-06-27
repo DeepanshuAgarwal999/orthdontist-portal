@@ -31,18 +31,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
                 </div>
 
                 <div className="relative z-10 flex flex-col justify-center px-12 pb-16 pt-6 text-white">
-                    {/* Logo/Brand */}
-                    {/* <div className="mb-12">
-                        <div className="flex items-center space-x-3 mb-6">
-                            <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
-                                <ToothIcon className="text-white" size={32} />
-                            </div>
-                            <div>
-                                <h1 className="text-2xl font-bold">DentistPortal</h1>
-                                <p className="text-white/80 text-sm">Professional Dental Network</p>
-                            </div>
-                        </div>
-                    </div> */}
+              
                     <div className="p-2 mb-6">
                         <Image src={logo.src} alt="logo" width={120} height={50} className='rounded-xl' />
                     </div>

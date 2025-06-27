@@ -37,7 +37,7 @@ const Faqs = () => {
     };
 
     return (
-        <div className="max-w-3xl mx-auto px-4 py-10 min-h-[710px]">
+        <div className="max-w-3xl mx-auto px-4 py-10 mt-12 min-h-[710px]">
             <h1 className='text-black text-3xl md:text-5xl text-center font-semibold'>
                 FAQS
             </h1>

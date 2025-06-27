@@ -132,7 +132,7 @@ const benefits: Benefit[] = [
     {
         icon: <InvisibleIcon size={48} className="text-white" />,
         title: "Virtually invisible",
-        description: "ODONTO are virtually invisible and discreet, so most people will not even notice that you are wearing them.",
+        description: "ALIGNER360 are virtually invisible and discreet, so most people will not even notice that you are wearing them.",
         gradient: "from-purple-400 to-purple-600",
         accentColor: "purple"
     },
@@ -146,21 +146,21 @@ const benefits: Benefit[] = [
     {
         icon: <RemovableIcon size={48} className="text-white" />,
         title: "Safe and Removable",
-        description: "ODONTO clear aligners are removable so you can brush & floss your teeth & maintain good oral hygiene. Traditional braces come with problems like bits of food getting trapped, which can contribute to tooth decay and gum disease. ODONTO clear aligners are removable, so you can brush and floss just like you normally would.",
+        description: "ALIGNER360 clear aligners are removable so you can brush & floss your teeth & maintain good oral hygiene. Traditional braces come with problems like bits of food getting trapped, which can contribute to tooth decay and gum disease. ALIGNER360 clear aligners are removable, so you can brush and floss just like you normally would.",
         gradient: "from-teal-400 to-teal-600",
         accentColor: "teal"
     },
     {
         icon: <FastIcon size={48} className="text-white" />,
         title: "Rapid Results",
-        description: "Compared to other teeth straightening methods, ODONTO works fast. On average, total treatment time with ODONTO is 12-18 months, and many people notice results in a matter of weeks.",
+        description: "Compared to other teeth straightening methods, ALIGNER360 works fast. On average, total treatment time with ALIGNER360 is 12-18 months, and many people notice results in a matter of weeks.",
         gradient: "from-orange-400 to-orange-600",
         accentColor: "orange"
     },
     {
         icon: <SmileyIcon size={48} className="text-white" />,
         title: "Feel Better about Yourself",
-        description: "Finally, and most importantly to me, is that ODONTO quickly help people to feel better about themselves because they are invisible and help in correcting the smiles without being noticed and having to stop anything.",
+        description: "Finally, and most importantly to me, is that ALIGNER360 quickly help people to feel better about themselves because they are invisible and help in correcting the smiles without being noticed and having to stop anything.",
         gradient: "from-pink-400 to-pink-600",
         accentColor: "pink"
     }
@@ -188,11 +188,11 @@ const AlignBenefitsPage: React.FC = () => {
                     <h1 className="text-4xl md:text-6xl font-bold text-neutral-900 mb-6">
                         Advantages of
                         <br />
-                        <span className="gradient-text">ODONTO</span>
+                        <span className="gradient-text">ALIGNER360</span>
                     </h1>
 
                     <p className="text-xl text-neutral-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-                        ODONTO clear aligners treatment is provided at a registered dental clinic by a qualified and experienced dentist only.
+                        ALIGNER360 clear aligners treatment is provided at a registered dental clinic by a qualified and experienced dentist only.
                         Our Treatment protocol is based on our experience of treatments provided to more than a million patients.
                     </p>
 
@@ -231,10 +231,10 @@ const AlignBenefitsPage: React.FC = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">
-                            Why Choose ODONTO Clear Aligners?
+                            Why Choose ALIGNER360 Clear Aligners?
                         </h2>
                         <p className="text-xl text-neutral-600 max-w-2xl mx-auto">
-                            Experience the revolutionary advantages that make ODONTO the preferred choice for modern teeth straightening
+                            Experience the revolutionary advantages that make ALIGNER360 the preferred choice for modern teeth straightening
                         </p>
                     </div>
 
@@ -358,7 +358,7 @@ const AlignBenefitsPage: React.FC = () => {
                         Ready to Transform Your Smile?
                     </h2>
                     <p className="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
-                        Join over 1 million patients who have chosen ODONTO clear aligners for their smile transformation. Start your journey today.
+                        Join over 1 million patients who have chosen ALIGNER360 clear aligners for their smile transformation. Start your journey today.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -367,7 +367,7 @@ const AlignBenefitsPage: React.FC = () => {
                                 Schedule Consultation
                             </Button>
                         </Link>
-                        <Link href="/orthodontist-list">
+                        <Link href="/aligners">
                             <Button size="xl" variant="outline" className="w-full sm:w-auto">
                                 Find dentist
                             </Button>

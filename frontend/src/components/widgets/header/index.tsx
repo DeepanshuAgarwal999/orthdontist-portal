@@ -31,6 +31,7 @@ const Header = () => {
     const ROUTES = user ? PRIVATE_NAV_ITEMS : PUBLIC_NAV_ITEMS
     return (
         <header className="bg-white shadow-lg">
+
             {/* Top Row */}
             <div className="">
                 <div className="pl-2 sm:pl-8 md:pl-20 overflow-hidden">
@@ -41,7 +42,7 @@ const Header = () => {
                         </Link>
 
                         {/* Center - ISO Certification (hidden on mobile) */}
-                        <div className="hidden md:flex items-center text-white bg-blue-900 flex-1 h-full px-6 sm:px-8 lg:px-10">
+                        <div className="hidden md:flex items-center text-white bg-[#2563eb] flex-1 h-full px-6 sm:px-8 lg:px-10">
                             <div className="flex items-center gap-2">
                                 <div className="w-6 h-6 rounded-full border border-white flex items-center justify-center">
                                     <span className="text-xs">🌐</span>
@@ -51,13 +52,13 @@ const Header = () => {
                         </div>
 
                         {/* Right Side - Email and Contact */}
-                        <div className="hidden md:flex items-center gap-4 bg-blue-900 h-full pr-6 sm:pr-8 lg:pr-10">
+                        <div className="hidden md:flex items-center gap-4 bg-[#2563eb] h-full pr-6 sm:pr-8 lg:pr-10">
                             <div className="flex items-center gap-2 text-white">
                                 <span className="text-sm">✉</span>
                                 <span className="text-sm">info@aligners360.com</span>
                             </div>
                             <Link href="/contact">
-                                <Button className="" variant={'gradient'}>
+                                <Button className="bg-[#3b82f6]" variant={'default'}>
                                     CONTACT US
                                 </Button>
                             </Link>
@@ -136,12 +137,7 @@ const Header = () => {
                                 LogOut
                             </Button>
                         ) : (
-                            <div className="space-y-2">
-                                <Link href="/login" onClick={closeMobileMenu}>
-                                    <Button variant="outline" className="w-full">
-                                        Sign In
-                                    </Button>
-                                </Link>
+                            <div>
                                 <Link href="/signup" onClick={closeMobileMenu}>
                                     <Button variant="gradient" className="w-full">
                                         Get Started

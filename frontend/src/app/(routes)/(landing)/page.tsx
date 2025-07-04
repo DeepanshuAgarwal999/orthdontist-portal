@@ -1,24 +1,19 @@
-'use client'
 import Link from 'next/link';
-import useUser from '@/hooks/useUser';
 import Image from 'next/image';
-import WhyAligner360 from '@/components/sections/home/WhyAligner360';
 import Testimonials from '@/components/sections/home/Testimonials';
 import Faqs from '@/components/sections/home/Faqs';
 import DentistForm from '@/components/sections/home/DentistForm';
 import FreeCheckup from '@/components/sections/home/FreeCheckup';
 import SmileSection from '@/components/sections/home/SmileSection';
+import OurTreatment from '@/components/sections/home/OurTreatment';
 
 const HomePage: React.FC = () => {
-    const { user } = useUser();
-    const isDoctor = !!user
-    const profile = user?.data
-    // bg - gradient - to - r from - blue - 900 via - blue - 600 to - blue - 900
+
     return (
         <div>
             <section className='relative gradient-dental py-20 min-h-screen flex flex-col md:flex-row items-center justify-between px-6 md:px-20 overflow-hidden'>
                 {/* Background SVG Elements */}
-    
+
                 <div className="absolute inset-0 pointer-events-none">
                     {/* Large decorative circles */}
                     <svg className="absolute top-10 left-10 opacity-10" width="200" height="200" viewBox="0 0 200 200">
@@ -117,9 +112,9 @@ const HomePage: React.FC = () => {
                     </svg>
                 </div>
             </section>
-            <SmileSection/>
+            <SmileSection />
             <FreeCheckup />
-            <WhyAligner360 />
+            <OurTreatment />
             <Testimonials />
             <DentistForm />
             <Faqs />

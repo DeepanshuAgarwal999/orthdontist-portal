@@ -4,13 +4,13 @@ import React from 'react'
 
 const DentistsPage = () => {
     return (
-        <div className='relative'>
+        <div className='bg-white'>
             <div className='relative'>
                 <h1 className='absolute text-3xl sm:text-5xl top-1/3 left-[5%]  md:left-[10%] md:!leading-[3.75rem]'>
                     Clear Aligners Invisible <br /> Braces Treatment
                 </h1>
 
-                <Image src={'/images/aligner.png'} alt={'aligner'} width={500} height={500} className='w-full h-full  max-h-[469px]  ' />
+                <Image src={'/images/aligner.png'} alt={'aligner'} width={500} height={500} className='sm:w-[70%] ml-auto h-full  max-h-[520px]  ' />
             </div>
 
             <div className='flex flex-col sm:flex-row items-start gap-8 py-10 max-w-7xl mx-auto px-4 mt-8'>

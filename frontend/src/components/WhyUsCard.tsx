@@ -10,7 +10,7 @@ const WhyUsCard = ({ title, description, imageUrl }: WhyUsCardProps) => {
     return (
         <div className='bg-white shadow-md rounded-lg   my-4 mx-4 border border-b-2  border-b-blue-900'>
             {
-                imageUrl && <Image src={imageUrl} alt='Why us card' width={400} height={400} className='w-full max-h-[180px]' />
+                imageUrl && <Image src={imageUrl} alt='Why us card' width={400} height={400} className='w-full rounded-t-lg max-h-[240px]' />
             }
             <div className='p-4'>
                 <h1 className='text-center text-xl font-bold my-4'>

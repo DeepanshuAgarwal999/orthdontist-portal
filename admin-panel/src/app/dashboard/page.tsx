@@ -5,15 +5,14 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import {
     Users,
-    UserCheck,
     FileText,
     TrendingUp,
     Plus,
-    Eye,
-    Edit,
     GraduationCap,
     BookOpen,
-    Stethoscope
+    Stethoscope,
+    User,
+    GroupIcon
 } from 'lucide-react';
 import { BlogService } from '@/services/blog.service';
 import { AdminCourseService } from '@/services/course.service';
@@ -40,7 +39,14 @@ const DashboardPage: React.FC = () => {
         queryKey: ['users'],
         queryFn: async () => await axiosInstance.get('/users')
     });
-    const totalUsers = users?.data.totalUsers || 0;
+
+    const { data: testimonials } = useQuery({
+        queryKey: ['testimonials'],
+        queryFn: async () => await axiosInstance.get('/testimonial')
+    })
+
+    const totalTestimonials = testimonials?.data?.data?.length || 0;
+    const totalUsers = users?.data.users.length || 0;
     const stats = blogStats?.data;
     const courseStatsData = courseStats?.data;
     const ebookStatsData = ebookStats?.data;
@@ -53,7 +59,7 @@ const DashboardPage: React.FC = () => {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">                <div className="bg-gradient-to-br from-blue-50 to-indigo-100 backdrop-blur-sm border border-blue-200/30 overflow-hidden shadow-lg rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">                <div className="bg-gradient-to-br from-blue-50 to-indigo-100 backdrop-blur-sm border border-blue-200/30 overflow-hidden shadow-lg rounded-lg">
                 <div className="p-5">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
@@ -64,7 +70,7 @@ const DashboardPage: React.FC = () => {
                         <div className="ml-5 w-0 flex-1">
                             <dl>
                                 <dt className="text-sm font-medium text-blue-700 truncate">
-                                    Total Dentists
+                                    Total Users
                                 </dt>
                                 <dd className="text-lg font-bold text-blue-900">
                                     {totalUsers}
@@ -163,6 +169,28 @@ const DashboardPage: React.FC = () => {
                         </div>
                     </div>
                 </div>
+                <div className="bg-gradient-to-br from-red-50 to-pink-100 backdrop-blur-sm border border-teal-200/30 overflow-hidden shadow-lg rounded-lg">
+                    <div className="p-5">
+                        <div className="flex items-center">
+                            <div className="flex-shrink-0">
+                                <div className="w-8 h-8 bg-gradient-to-r from-red-500 to-red-600 rounded-md flex items-center justify-center shadow-sm">
+                                    <GroupIcon className="w-5 h-5 text-white" />
+                                </div>
+                            </div>
+                            <div className="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt className="text-sm font-medium text-red-700 truncate">
+                                        Total Testimonials
+                                    </dt>
+                                    <dd className="text-lg font-bold text-red-900">
+                                        {totalTestimonials}
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>            {/* Quick Actions */}
             <div className="bg-gradient-to-br from-white/80 to-gray-50/80 backdrop-blur-sm border border-gray-200/30 shadow-lg rounded-lg">
                 <div className="px-6 py-4 border-b border-gray-200/50 bg-gradient-to-r from-slate-50 to-gray-100">
@@ -229,7 +257,13 @@ const DashboardPage: React.FC = () => {
                             <Stethoscope className="w-5 h-5 mr-2 text-indigo-600" />
                             Manage Case Studies
                         </Link>
-
+                        <Link
+                            href="/dashboard/testimonials"
+                            className="flex items-center justify-center px-4 py-3 border border-red-200 rounded-lg shadow-sm bg-gradient-to-r from-red-50 to-pink-50 text-sm font-medium text-red-700 hover:from-red-100 hover:to-red-100 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-200"
+                        >
+                            <Stethoscope className="w-5 h-5 mr-2 text-red-600" />
+                            Manage Testimonials
+                        </Link>
 
                     </div>
                 </div>

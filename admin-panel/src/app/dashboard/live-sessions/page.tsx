@@ -67,13 +67,7 @@ const LiveSessionsPage = () => {
         },
     });
 
-    const cancelMutation = useMutation({
-        mutationFn: (id: string) => LiveSessionService.cancelLiveSession(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['live-sessions'] });
-        },
-    });
-
+  
     const handleDelete = (id: string) => {
         deleteMutation.mutate(id);
     };

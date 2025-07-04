@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react';
 import { SignupFormData } from '@/types/auth';
+import Link from 'next/link';
 
 interface SignupFormProps {
   onSubmit: (data: SignupFormData) => void;
@@ -25,7 +26,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSubmit, isLoading, error }) =
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setPasswordError('Passwords do not match');
@@ -217,9 +218,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSubmit, isLoading, error }) =
         <div className="mt-6 text-center">
           <p className="text-gray-600">
             Already have an account?{' '}
-            <a href="/login" className="text-blue-600 hover:text-blue-800 font-medium">
-              Sign in
-            </a>
+            <Link href="/login" className="text-blue-600 hover:text-blue-800 font-medium">
+              Login
+            </Link>
           </p>
         </div>
       </div>

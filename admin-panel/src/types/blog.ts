@@ -16,6 +16,7 @@ export interface Blog {
   updatedAt: string;
   tags?: string[];
   readingTime?: number;
+  isForDentist: boolean;
 }
 
 export interface CreateBlogRequest {
@@ -26,6 +27,7 @@ export interface CreateBlogRequest {
   featuredImage?: string;
   status: "DRAFT" | "PUBLISHED";
   tags?: string[];
+  isForDentist: boolean;
 }
 
 export interface UpdateBlogRequest {
@@ -36,6 +38,7 @@ export interface UpdateBlogRequest {
   featuredImage?: string;
   status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   tags?: string[];
+  isForDentist?: boolean;
 }
 
 export interface BlogListResponse {

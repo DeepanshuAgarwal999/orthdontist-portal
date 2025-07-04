@@ -48,7 +48,7 @@ export class AuthController {
     const result = await this.authService.login(loginDto);
 
     if (result.user.role.includes('admin')) {
-      CookieHelper.setAccessTokenCookie(res, result.token, 1 * 24 * 60 * 60);
+      CookieHelper.setAccessTokenCookie(res, result.token, 24 * 60 * 60);
     } else {
       CookieHelper.setAccessTokenCookie(res, result.token, 30 * 24 * 60 * 60);
     }

@@ -15,7 +15,7 @@ export class BlogService {
   }
 
   static async getBlogById(id: string): Promise<BlogResponse> {
-    const response = await axiosInstance.get(`/blogs/${id}`);
+    const response = await axiosInstance.get(`/blogs/${id}/admin`);
     return response.data;
   }
 

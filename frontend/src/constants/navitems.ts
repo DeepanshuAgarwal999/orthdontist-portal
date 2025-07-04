@@ -4,6 +4,10 @@ export const PUBLIC_NAV_ITEMS = [
     href: "/",
   },
   {
+    name: "Why Aligner360",
+    href: "/why-aligner360",
+  },
+  {
     name: "Aligners",
     href: "/aligners",
   },
@@ -18,8 +22,11 @@ export const PUBLIC_NAV_ITEMS = [
   {
     name: "Case Studies",
     href: "/case-studies",
-  }
-
+  },
+  {
+    name: "Blogs",
+    href: "/blogs",
+  },
 ];
 
 export const PRIVATE_NAV_ITEMS = [
@@ -43,5 +50,9 @@ export const PRIVATE_NAV_ITEMS = [
   {
     name: "Academy",
     href: "/academy",
+  },
+  {
+    name: "Blogs",
+    href: "/blogs",
   },
 ];

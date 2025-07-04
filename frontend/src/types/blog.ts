@@ -46,6 +46,7 @@ export interface BlogQueryParams {
   status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+  isForDentist?: boolean;
 }
 
 export interface PaginationProps {

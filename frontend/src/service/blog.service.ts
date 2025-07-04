@@ -5,14 +5,12 @@ export class BlogsService {
   static async getAllBlogs(params?: BlogQueryParams): Promise<BlogsResponse> {
     const searchParams = new URLSearchParams();
 
-    if (params?.page) searchParams.append("page", params.page.toString());
-    if (params?.limit) searchParams.append("limit", params.limit.toString());
-    if (params?.search) searchParams.append("search", params.search);
-    if (params?.category) searchParams.append("category", params.category);
-    if (params?.status) searchParams.append("status", params.status);
-    if (params?.sortBy) searchParams.append("sortBy", params.sortBy);
-    if (params?.sortOrder) searchParams.append("sortOrder", params.sortOrder);
-
+    Object.keys(params || {}).forEach((key) => {
+      const value = params![key as keyof BlogQueryParams];
+      if (value !== undefined && value !== null) {
+        searchParams.append(key, value.toString());
+      }
+    });
     const url = `/blogs/public${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
     const response = await axiosInstance.get(url);
     return response.data;

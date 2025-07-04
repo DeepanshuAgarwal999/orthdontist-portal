@@ -402,9 +402,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSubmit, loading = false }) =>
 
 
                 <p className="text-center text-sm text-neutral-600 mt-8">
-                    Already have an account?
+                    Already have an account?{" "}
                     <Link href="/login" className="font-medium text-primary-600 hover:text-primary-700">
-                        Sign in
+                       Login
                     </Link>
                 </p>
             </CardContent>

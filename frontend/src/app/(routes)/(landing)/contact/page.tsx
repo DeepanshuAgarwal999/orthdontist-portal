@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/Input';
 import { Card, CardContent } from '@/components/ui/Card';
 import { MailIcon, UserIcon, MessageCircleIcon, PhoneIcon, MapPinIcon, CalendarIcon } from '@/components/ui/Icons';
 import axiosInstance from '@/config/axios.instance';
+import Faqs from '@/components/sections/home/Faqs';
 
 interface ContactFormData {
     name: string;
@@ -249,8 +250,10 @@ const ContactUs = () => {
                                         </div>
                                         <div>
                                             <p className="font-medium text-neutral-800">Phone Support</p>
-                                            <p className="text-neutral-600">+1 (555) 123-4567</p>
-                                            <p className="text-sm text-neutral-500">Mon-Fri, 9AM-6PM EST</p>
+                                            <p className="text-neutral-600">+91 93815 90963
+                                            </p>
+                                            <p className="text-sm text-neutral-500">Monday - Saturday, 9:00 AM - 9:00 PM IST
+                                            </p>
                                         </div>
                                     </div>
 
@@ -260,7 +263,8 @@ const ContactUs = () => {
                                         </div>
                                         <div>
                                             <p className="font-medium text-neutral-800">Email Support</p>
-                                            <p className="text-neutral-600">support@dentistportal.com</p>
+                                            <p className="text-neutral-600">support@aligner360.com
+                                            </p>
                                             <p className="text-sm text-neutral-500">24/7 Support Available</p>
                                         </div>
                                     </div>
@@ -271,8 +275,9 @@ const ContactUs = () => {
                                         </div>
                                         <div>
                                             <p className="font-medium text-neutral-800">Office Location</p>
-                                            <p className="text-neutral-600">123 Dental Plaza, Suite 500</p>
-                                            <p className="text-neutral-600">New York, NY 10001</p>
+                                            <p className="text-neutral-600">AMTZ campus (Andhra Pradesh medTech zone, Medical technology of india) ,</p>
+                                            <p className="text-neutral-600">Pragathi Maidan, Visakhapatnam, Andhra Pradesh – 530031
+                                            </p>
                                         </div>
                                     </div>
 
@@ -282,8 +287,7 @@ const ContactUs = () => {
                                         </div>
                                         <div>
                                             <p className="font-medium text-neutral-800">Business Hours</p>
-                                            <p className="text-neutral-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
-                                            <p className="text-neutral-600">Saturday: 10:00 AM - 4:00 PM</p>
+                                            <p className="text-neutral-600">Monday - Saturday: 9:00 AM - 9:00 PM</p>
                                             <p className="text-neutral-600">Sunday: Closed</p>
                                         </div>
                                     </div>
@@ -292,55 +296,12 @@ const ContactUs = () => {
                         </Card>
 
                         {/* Emergency Contact */}
-                        <Card className="bg-red-50 border-red-200">
-                            <CardContent className="p-6 text-center">
-                                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <PhoneIcon className="text-red-600" size={24} />
-                                </div>
-                                <h3 className="text-lg font-bold text-red-800 mb-2">Emergency Dental Care</h3>
-                                <p className="text-red-700 mb-4">
-                                    Need immediate dental assistance? Call our emergency hotline.
-                                </p>
-                                <Button
-                                    variant="outline"
-                                    className="border-red-300 text-red-700 hover:bg-red-100"
-                                    onClick={() => window.location.href = 'tel:+15551234567'}
-                                >
-                                    Call Emergency Line
-                                </Button>
-                            </CardContent>
-                        </Card>
+
                     </div>
                 </div>
 
                 {/* FAQ Section */}
-                <Card className="mt-12 bg-white/95 backdrop-blur-sm shadow-2xl border-0">
-                    <CardContent className="p-8">
-                        <h3 className="text-2xl font-bold text-neutral-800 mb-6 text-center">Frequently Asked Questions</h3>
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <div className="space-y-4">
-                                <div>
-                                    <h4 className="font-semibold text-neutral-800 mb-2">How do I find a dentist near me?</h4>
-                                    <p className="text-neutral-600 text-sm">Use our search feature to find verified dentists in your area by location, specialty, or insurance accepted.</p>
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-neutral-800 mb-2">Are all dentists verified?</h4>
-                                    <p className="text-neutral-600 text-sm">Yes, all dentists on our platform go through a thorough verification process to ensure quality care.</p>
-                                </div>
-                            </div>
-                            <div className="space-y-4">
-                                <div>
-                                    <h4 className="font-semibold text-neutral-800 mb-2">How do I schedule an appointment?</h4>
-                                    <p className="text-neutral-600 text-sm">Contact the dental office directly using the provided phone number or visit their website for online booking.</p>
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-neutral-800 mb-2">Is there a cost to use this service?</h4>
-                                    <p className="text-neutral-600 text-sm">No, our platform is completely free for patients. We help connect you with dental professionals at no charge.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+                <Faqs />
             </div>
         </div>
     );

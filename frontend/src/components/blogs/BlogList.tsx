@@ -8,6 +8,7 @@ import BlogSkeleton from './BlogSkeleton';
 import BlogSearch from './BlogSearch';
 import Pagination from '@/components/shared/Pagination';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import useUser from '@/hooks/useUser';
 
 interface BlogListProps {
     showSearch?: boolean;
@@ -29,7 +30,10 @@ const BlogList: React.FC<BlogListProps> = ({
         sortBy: 'createdAt',
         sortOrder: 'desc'
     });
-
+    const { user } = useUser()
+    if (!user) {
+        filters.isForDentist = false
+    }
     const { data: blogsData, isLoading, error } = useQuery({
         queryKey: ['blogs', JSON.stringify(filters)],
         queryFn: () => BlogsService.getAllBlogs(filters),

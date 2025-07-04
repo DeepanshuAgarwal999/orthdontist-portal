@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { LoginFormData } from '@/types/auth';
+import Link from 'next/link';
 
 interface LoginFormProps {
     onSubmit: (data: LoginFormData) => void;
@@ -102,9 +103,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading, error }) => 
                 <div className="mt-6 text-center">
                     <p className="text-gray-600">
                         Don't have an admin account?{' '}
-                        <a href="/signup" className="text-blue-600 hover:text-blue-800 font-medium">
+                        <Link href="/signup" className="text-blue-600 hover:text-blue-800 font-medium">
                             Contact your administrator
-                        </a>
+                        </Link>
                     </p>
                 </div>
             </div>

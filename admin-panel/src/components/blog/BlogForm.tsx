@@ -40,7 +40,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ blog, mode }) => {
         featuredImage: blog?.featuredImage || '',
         status: blog?.status || 'DRAFT' as const,
         tags: blog?.tags || [],
-        isForDentist: false,
+        isForDentist: blog?.isForDentist || false,
     });
     const [editorData, setEditorData] = useState<OutputData>(() => {
         if (blog?.content) {
@@ -143,6 +143,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ blog, mode }) => {
             featuredImage: featuredImageUrl.trim() || undefined,
             status: formData.status === 'ARCHIVED' ? 'DRAFT' as const : formData.status,
             tags: formData.tags.length > 0 ? formData.tags : undefined,
+            isForDentist: formData.isForDentist || false,
         };
 
         if (mode === 'create') {
@@ -268,7 +269,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ blog, mode }) => {
         if (files.length > 0) {
             processImageFile(files[0]);
         }
-    }; 
+    };
     const uploadFeaturedImage = async () => {
         if (!featuredImageFile) return null;
 

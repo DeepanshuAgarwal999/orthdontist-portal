@@ -16,7 +16,8 @@ import {
     BookOpen,
     Video,
     MessageCircleIcon,
-    Stethoscope
+    Stethoscope,
+    UsersRound
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AuthService } from '@/services/auth.service';
@@ -55,11 +56,19 @@ const navigationItems = [
         name: 'Case Studies',
         href: '/dashboard/case-studies',
         icon: Stethoscope,
-    },
-    {
+    }, {
         name: "Contacts",
         href: "/dashboard/contacts",
         icon: MessageCircleIcon
+    }, {
+        name: "Testimonials",
+        href: "/dashboard/testimonials",
+        icon: UsersRound
+    },
+    {
+        name: "Users",
+        href: "/dashboard/users",
+        icon: Users
     }
 
 ];
@@ -73,8 +82,12 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
         try {
             await AuthService.logout()
             router.push('/')
+            window.location.href = '/'
         } catch (error) {
             // Handle error silently
+        }
+        finally {
+            window.location.href = '/'
         }
     };
 

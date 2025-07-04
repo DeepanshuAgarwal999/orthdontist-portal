@@ -6,6 +6,7 @@ import { EbookController } from './controller/ebook.controller';
 import { LiveSessionController } from './controller/livesession.controller';
 import { ImageKitController } from './controller/imagekit.controller';
 import { CaseStudyController } from './controller/casestudy.controller';
+import { UsersController } from './controller/users.controller';
 import { AuthService } from './services/auth.service';
 import { BlogService } from './services/blog.service';
 import { CourseService } from './services/course.service';
@@ -13,6 +14,7 @@ import { EbookService } from './services/ebook.service';
 import { LiveSessionService } from './services/livesession.service';
 import { EmailService } from './services/email.service';
 import { CaseStudyService } from './services/casestudy.service';
+import { UsersService } from './services/users.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { ImageKitService } from './services/imagekit.service';
 import { UserController } from './controller/user.controller';
@@ -20,6 +22,8 @@ import { MapService } from './services/map.service';
 import { ContactService } from './services/contact.service';
 import { ProcessController } from './controller/process.controller';
 import { AlignerProcessService } from './services/alignerprocess.service';
+import { TestimonialService } from './services/testimonial.service';
+import { TestimonialController } from './controller/testimonial.controller';
 
 @Module({
   imports: [PrismaModule],
@@ -31,8 +35,10 @@ import { AlignerProcessService } from './services/alignerprocess.service';
     LiveSessionController,
     ImageKitController,
     UserController,
+    UsersController,
     CaseStudyController,
-    ProcessController
+    ProcessController,
+    TestimonialController,
   ],
   providers: [
     AuthService,
@@ -45,7 +51,9 @@ import { AlignerProcessService } from './services/alignerprocess.service';
     MapService,
     ContactService,
     CaseStudyService,
-    AlignerProcessService
+    UsersService,
+    AlignerProcessService,
+    TestimonialService,
   ],
   exports: [
     AuthService,
@@ -58,7 +66,8 @@ import { AlignerProcessService } from './services/alignerprocess.service';
     MapService,
     ContactService,
     CaseStudyService,
-    AlignerProcessService
+    UsersService,
+    AlignerProcessService,
   ],
 })
 export class ApiModule {}

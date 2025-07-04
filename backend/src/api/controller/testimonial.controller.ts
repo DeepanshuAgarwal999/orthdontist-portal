@@ -66,13 +66,12 @@ export class TestimonialController {
     }
 
     const imageBuffer = file.buffer;
-    const fileName = new Date().toISOString() + '-' + file.originalname;
 
     const imageKitResponse = await this.imageKitService.uploadFile(
       imageBuffer,
-      'testimonial',
-      fileName,
-      true,
+      file.originalname,
+      'testimonials-images',
+      false,
       ['testimonial'],
     );
     if (!imageKitResponse?.url) {
@@ -122,7 +121,7 @@ export class TestimonialController {
 
       const imageKitResponse = await this.imageKitService.uploadFile(
         imageBuffer,
-        'testimonial',
+        'testimonials',
         fileName,
         true,
         ['testimonial'],
@@ -148,7 +147,7 @@ export class TestimonialController {
   @Roles(UserRole.ADMIN)
   @UseGuards(AuthGuard)
   async deleteTestimonial(@Param('id') id: string) {
-    const result = await this.testimonialService.deleteTestimonial(id);
+    await this.testimonialService.deleteTestimonial(id);
     return {
       success: true,
       message: 'Testimonial deleted successfully',

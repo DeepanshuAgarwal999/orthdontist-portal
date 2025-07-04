@@ -21,6 +21,7 @@ import {
   UpdateBlogDto,
   BlogQueryDto,
   PublishBlogDto,
+  BlogServiceQuery,
 } from '../dto/blog.dto';
 import { AuthGuard, UserRole } from '../../guards/auth.guard';
 import { RolesGuard, Roles } from '../../guards/role.guard';
@@ -169,19 +170,46 @@ export class BlogController {
     });
   }
 
+  @Get(':id/admin')
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  async getBlogByIdAdmin(
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const role = req.user.role;
+    const blog = await this.blogService.getBlogById(id, role);
+
+    return res.status(HttpStatus.OK).json({
+      success: true,
+      message: 'Blog retrieved successfully',
+      data: blog,
+    });
+  }
   // ==================== PUBLIC ROUTES ====================
 
   /**
    * Get all published blogs (Public access)
    * GET /api/v1/blogs
    */
+  private parseBoolean(
+    value: string | boolean | undefined,
+  ): boolean | undefined {
+    if (value === undefined || value === null) return undefined;
+    if (typeof value === 'boolean') return value;
+    return value === 'true';
+  }
   @Get('public')
   async getPublishedBlogs(@Query() query: BlogQueryDto, @Res() res: Response) {
-    const isForDentist = query.isForDentist || false;
-    const result = await this.blogService.getPublishedBlogs({
+    const isForDentist = this.parseBoolean(query.isForDentist);
+
+    const serviceQuery: BlogServiceQuery = {
       ...query,
       isForDentist,
-    });
+    };
+    const result = await this.blogService.getPublishedBlogs(serviceQuery);
+
     return res.status(HttpStatus.OK).json({
       success: true,
       message: 'Published blogs retrieved successfully',
@@ -273,17 +301,7 @@ export class BlogController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    let userRole: UserRole | undefined;
-    try {
-      const token = req.cookies?.access_token;
-
-      if (token && req.user) {
-        userRole = req.user.role;
-      }
-    } catch (error) {
-      // User is not authenticated, continue as public user
-    }
-    const blog = await this.blogService.getBlogById(id, userRole);
+    const blog = await this.blogService.getBlogById(id, UserRole.USER);
 
     return res.status(HttpStatus.OK).json({
       success: true,

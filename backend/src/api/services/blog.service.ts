@@ -125,7 +125,7 @@ export class BlogService {
     if (isForDentist !== undefined) {
       where.isForDentist = isForDentist;
     }
-
+    console.log({ where });
     // Get total count for pagination
     const total = await this.prisma.blog.count({ where });
 
@@ -159,7 +159,7 @@ export class BlogService {
   }
 
   // Get blog by ID
-  async getBlogById(id: string, userRole?: UserRole) {
+  async getBlogById(id: string, role: UserRole) {
     const blog = await this.prisma.blog.findUnique({
       where: { id },
       include: {
@@ -176,11 +176,8 @@ export class BlogService {
     if (!blog) {
       throw new NotFoundException('Blog not found');
     }
-    if (!userRole && blog.isForDentist) {
-      throw new ForbiddenException('You can only view public blogs');
-    }
-    
-    if (blog.status === BlogStatus.PUBLISHED) {
+
+    if (blog.status === BlogStatus.PUBLISHED && role !== UserRole.ADMIN) {
       await this.prisma.blog.update({
         where: { id },
         data: { viewCount: { increment: 1 } },

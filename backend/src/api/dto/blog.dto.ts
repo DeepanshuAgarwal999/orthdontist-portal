@@ -159,19 +159,20 @@ export class BlogQueryDto {
   sortBy?: string;
 
   @IsOptional()
-  @IsBoolean()
-  @Type(() => Boolean)
+  @IsString()
   isForDentist?: boolean;
 
   @IsOptional()
   @IsString()
   sortOrder?: 'asc' | 'desc';
-
-
 }
 
 export class PublishBlogDto {
   @IsOptional()
   @IsString()
   publishedAt?: string;
+}
+
+export interface BlogServiceQuery extends Omit<BlogQueryDto, 'isForDentist'> {
+  isForDentist?: boolean;
 }

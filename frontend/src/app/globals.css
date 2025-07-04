@@ -143,7 +143,12 @@
   .gradient-dental {
     background: linear-gradient(135deg, var(--primary-600) 0%, var(--secondary-500) 100%);
   }
-
+  .gradient-dental-2 {
+    background: linear-gradient(135deg, var(--primary-800) 0%, var(--secondary-800) 100%);
+  }
+  .gradient-dental-3 {
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--secondary-600) 100%);
+  }
   .gradient-text {
     background: linear-gradient(135deg, var(--primary-600) 0%, var(--secondary-500) 100%);
     -webkit-background-clip: text;

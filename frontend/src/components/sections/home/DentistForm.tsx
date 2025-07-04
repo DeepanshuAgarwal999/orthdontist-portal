@@ -84,8 +84,8 @@ const DentistForm = () => {
             <h1 className='text-black text-3xl md:text-5xl text-center font-semibold'>
                 Connect with a dentist—just fill out the form!
             </h1>
-            <Image src="/images/connect.png" alt="connect" width={500} height={400} className='absolute max-w-7xl mx-auto w-full h-full inset-0 z-10 opacity-20 ' />
-            <form onSubmit={handleSubmit} className="mt-16 max-w-7xl mx-auto z-20 relative sm:p-8">
+            <Image src="/images/connect.png" alt="connect" width={800} height={400} className='absolute max-w-5xl mx-auto w-full h-full inset-0 z-10 opacity-20 ' />
+            <form onSubmit={handleSubmit} className="mt-16 max-w-5xl mx-auto z-20 relative sm:p-8">
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-x-10 space-y-6'>
                     <Input
                         label="Full Name"

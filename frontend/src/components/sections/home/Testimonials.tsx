@@ -1,19 +1,22 @@
+'use client'
 import Image from 'next/image'
-import React from 'react'
-import { Navigation } from 'swiper/modules'
+import { Autoplay, Navigation } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import 'swiper/css/navigation'
+import { useQuery } from '@tanstack/react-query'
+import axiosInstance from '@/config/axios.instance'
 
-const testimonials = [{
-    name: "John Doe",
-    imageUrl: "/images/john.png",
-    message: "VClear Aligners team has consistently provided our practice with invaluable support, from training to case consultation. Their dedication to ensuring the success of every treatment plan is evident in the exceptional patient outcomes we have achieved."
-}]
 
+type Testimonial = {
+    id: string
+    name: string
+    imageUrl: string
+    message: string
+}
 const TestimonialCard = ({ name, imageUrl, message }: { name: string, imageUrl: string, message: string }) => {
     return (
-        <div className='bg-white shadow-md rounded-lg w-xs  relative mb-4 mt-20 mx-4 border border-b-2  border-b-blue-900 group hover:translate-y-1 duration-300 ease-in-out'>
+        <div className='bg-white shadow-md rounded-lg   relative mb-4 mt-20 mx-4 border border-b-2  border-b-blue-900 group hover:translate-y-1 duration-300 ease-in-out'>
             <div className='rounded-full absolute left-1/2 -translate-x-1/2 -top-20 flex items-center justify-center bg-red-500 w-40 h-40 border-2 border-gray-50 group-hover:border-blue-900'>
                 {
                     imageUrl && <Image src={imageUrl} alt='Why us card' width={400} height={400} className='w-full max-h-[180px] rounded-full' />
@@ -32,16 +35,31 @@ const TestimonialCard = ({ name, imageUrl, message }: { name: string, imageUrl: 
     )
 }
 const Testimonials = () => {
+    const { data } = useQuery({
+        queryKey: ['testimonials'],
+        queryFn: async () => {
+            const response = await axiosInstance.get<{ data: Testimonial[] }>('/testimonial')
+            return response.data
+        }
+    })
+    const testimonials = data?.data || []
+    if (testimonials.length === 0) {
+        return null
+    }
     return (
-        <section className='pt-10 pb-20'>
+        <section className='pb-16'>
             <h1 className='text-black text-3xl md:text-5xl text-center font-semibold'>
                 Our Testimonials
             </h1>
             <div className='max-w-7xl mx-auto mt-20'>
-                <Swiper modules={[Navigation]}
+                <Swiper
+                    modules={[Autoplay]}
                     spaceBetween={20}
-                    navigation={true}
                     loop={true}
+                    autoplay={{
+                        delay: 3000,
+                        disableOnInteraction: false,
+                    }}
                     breakpoints={{
                         0: {
                             slidesPerView: 1,
